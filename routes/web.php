@@ -4,9 +4,17 @@ use App\Http\Controllers\Auth\WebAuthController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Legacy welcome page — remove once full Inertia pages are in place
+// Marketing landing page
 Route::get('/', function () {
-    return view('welcome');
+    return Inertia::render('Marketing/Home');
+})->name('home');
+
+// ── Demo / screenshot pages ────────────────────────────────────────────────
+Route::prefix('demo')->name('demo.')->group(function () {
+    Route::get('/admin', fn () => Inertia::render('Demo/AdminDashboardDemo'))->name('admin');
+    Route::get('/tenant', fn () => Inertia::render('Demo/TenantDashboardDemo'))->name('tenant');
+    Route::get('/analytics', fn () => Inertia::render('Demo/AnalyticsDemo'))->name('analytics');
+    Route::get('/billing', fn () => Inertia::render('Demo/BillingDemo'))->name('billing');
 });
 
 // ── Example Inertia routes ─────────────────────────────────────────────────
