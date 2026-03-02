@@ -18,7 +18,7 @@ use App\Http\Controllers\Tenant\TeamSettingController as TenantTeamSettingContro
 use App\Http\Controllers\Tenant\UserController as TenantUserController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('v1')->group(function (): void {
+Route::prefix('v1')->name('api.')->group(function (): void {
     Route::prefix('auth')->group(function (): void {
         Route::post('register', [AuthController::class, 'register'])->name('auth.register');
         Route::post('login', [AuthController::class, 'login'])->name('auth.login');

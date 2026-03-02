@@ -16,6 +16,13 @@ class User extends Authenticatable
     use HasFactory;
     use Notifiable;
 
+    /**
+     * The database connection that should be used by the model.
+     *
+     * @var string|null
+     */
+    protected $connection = 'central';
+
     /** @var list<string> */
     protected $fillable = [
         'name',
