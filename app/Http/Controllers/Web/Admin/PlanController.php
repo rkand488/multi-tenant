@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Admin\Services\AdminPlanService;
 use App\Central\Models\Plan;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Web\Admin\StorePlanRequest;
+use App\Http\Requests\Web\Admin\UpdatePlanRequest;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class PlanController extends Controller
 {
+    public function __construct(
+        private readonly AdminPlanService $planService,
+    ) {}
+
     public function index(): Response
     {
         return Inertia::render('Admin/Plans/Index', [
@@ -23,30 +29,15 @@ class PlanController extends Controller
         return Inertia::render('Admin/Plans/Create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StorePlanRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:plans,slug',
-            'description' => 'nullable|string',
-            'price_monthly' => 'required|numeric|min:0',
-            'price_yearly' => 'required|numeric|min:0',
-            'trial_days' => 'nullable|integer|min:0',
-            'is_active' => 'boolean',
-            'sort_order' => 'nullable|integer',
-            'features' => 'nullable|array',
-            'features.max_users' => 'nullable|integer',
-            'features.max_storage_mb' => 'nullable|integer',
-            'features.api_access' => 'boolean',
-            'features.sso' => 'boolean',
-            'features.custom_domain' => 'boolean',
-        ]);
+        $validated = $request->validated();
 
-        // Convert dollars to cents
+        // Convert dollars to cents (frontend sends dollars, DB stores cents)
         $validated['price_monthly'] = (int) ($validated['price_monthly'] * 100);
         $validated['price_yearly'] = (int) ($validated['price_yearly'] * 100);
 
-        Plan::on('central')->create($validated);
+        $this->planService->create($validated);
 
         return redirect()->route('admin.plans.index')->with('success', 'Plan created successfully.');
     }
@@ -65,37 +56,26 @@ class PlanController extends Controller
         ]);
     }
 
-    public function update(Request $request, Plan $plan): RedirectResponse
+    public function update(UpdatePlanRequest $request, Plan $plan): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:plans,slug,'.$plan->id,
-            'description' => 'nullable|string',
-            'price_monthly' => 'required|numeric|min:0',
-            'price_yearly' => 'required|numeric|min:0',
-            'trial_days' => 'nullable|integer|min:0',
-            'is_active' => 'boolean',
-            'sort_order' => 'nullable|integer',
-            'features' => 'nullable|array',
-            'features.max_users' => 'nullable|integer',
-            'features.max_storage_mb' => 'nullable|integer',
-            'features.api_access' => 'boolean',
-            'features.sso' => 'boolean',
-            'features.custom_domain' => 'boolean',
-        ]);
+        $validated = $request->validated();
 
-        // Convert dollars to cents
-        $validated['price_monthly'] = (int) ($validated['price_monthly'] * 100);
-        $validated['price_yearly'] = (int) ($validated['price_yearly'] * 100);
+        // Convert dollars to cents (frontend sends dollars, DB stores cents)
+        if (isset($validated['price_monthly'])) {
+            $validated['price_monthly'] = (int) ($validated['price_monthly'] * 100);
+        }
+        if (isset($validated['price_yearly'])) {
+            $validated['price_yearly'] = (int) ($validated['price_yearly'] * 100);
+        }
 
-        $plan->update($validated);
+        $this->planService->update($plan, $validated);
 
         return redirect()->route('admin.plans.index')->with('success', 'Plan updated successfully.');
     }
 
     public function destroy(Plan $plan): RedirectResponse
     {
-        $plan->delete();
+        $this->planService->delete($plan);
 
         return redirect()->route('admin.plans.index')->with('success', 'Plan deleted successfully.');
     }

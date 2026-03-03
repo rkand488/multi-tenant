@@ -34,15 +34,15 @@ const submit = () => {
 
         <!-- Heading -->
         <div class="text-center">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Create your workspace</h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started for free — no credit card required</p>
+            <h1 class="text-3xl font-bold text-gray-900">Create your workspace</h1>
+            <p class="mt-2 text-sm text-gray-600">Get started for free — no credit card required</p>
         </div>
 
-        <form class="space-y-4" @submit.prevent="submit">
+        <form class="space-y-5" @submit.prevent="submit">
 
             <!-- Workspace name -->
-            <div class="space-y-1">
-                <label for="workspace_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div class="space-y-2">
+                <label for="workspace_name" class="block text-sm font-medium text-gray-700">
                     Workspace name
                 </label>
                 <input
@@ -53,26 +53,25 @@ const submit = () => {
                     required
                     autofocus
                     placeholder="Acme Corp"
-                    class="block w-full rounded-lg border px-3 py-2 text-sm shadow-sm placeholder:text-gray-400
-                           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
-                           dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                    class="block w-full rounded-lg border px-4 py-3 text-sm shadow-sm placeholder:text-gray-400
+                           transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                           bg-white"
                     :class="form.errors.workspace_name
-                        ? 'border-red-400 text-red-900 focus:ring-red-500'
-                        : 'border-gray-300 dark:border-gray-600'"
+                        ? 'border-red-300 text-red-900 focus:ring-red-500'
+                        : 'border-gray-300 hover:border-gray-400'"
                     @input="onWorkspaceNameInput"
                 />
-                <p v-if="form.errors.workspace_name" class="text-xs text-red-600">{{ form.errors.workspace_name }}</p>
+                <p v-if="form.errors.workspace_name" class="text-sm text-red-600">{{ form.errors.workspace_name }}</p>
             </div>
 
             <!-- Workspace URL / slug -->
-            <div class="space-y-1">
-                <label for="slug" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div class="space-y-2">
+                <label for="slug" class="block text-sm font-medium text-gray-700">
                     Workspace URL
                 </label>
-                <div class="flex rounded-lg border shadow-sm overflow-hidden"
-                     :class="form.errors.slug ? 'border-red-400' : 'border-gray-300 dark:border-gray-600'">
-                    <span class="inline-flex items-center px-3 bg-gray-50 text-sm text-gray-500 border-r
-                                 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 border-gray-300 dark:border-gray-600">
+                <div class="flex rounded-lg border shadow-sm overflow-hidden transition-colors"
+                     :class="form.errors.slug ? 'border-red-300' : 'border-gray-300 hover:border-gray-400'">
+                    <span class="inline-flex items-center px-3 bg-gray-50 text-sm text-gray-600 border-r border-gray-300">
                         app/
                     </span>
                     <input
@@ -82,16 +81,16 @@ const submit = () => {
                         autocomplete="off"
                         required
                         placeholder="acme-corp"
-                        class="block w-full px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-inset
-                               focus:ring-indigo-500 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                        class="block w-full px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-inset
+                               focus:ring-primary-500 bg-white"
                     />
                 </div>
-                <p v-if="form.errors.slug" class="text-xs text-red-600">{{ form.errors.slug }}</p>
+                <p v-if="form.errors.slug" class="text-sm text-red-600">{{ form.errors.slug }}</p>
             </div>
 
             <!-- Owner name -->
-            <div class="space-y-1">
-                <label for="owner_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div class="space-y-2">
+                <label for="owner_name" class="block text-sm font-medium text-gray-700">
                     Your name
                 </label>
                 <input
@@ -101,19 +100,19 @@ const submit = () => {
                     autocomplete="name"
                     required
                     placeholder="Jane Smith"
-                    class="block w-full rounded-lg border px-3 py-2 text-sm shadow-sm placeholder:text-gray-400
-                           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
-                           dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                    class="block w-full rounded-lg border px-4 py-3 text-sm shadow-sm placeholder:text-gray-400
+                           transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                           bg-white"
                     :class="form.errors.owner_name
-                        ? 'border-red-400 text-red-900 focus:ring-red-500'
-                        : 'border-gray-300 dark:border-gray-600'"
+                        ? 'border-red-300 text-red-900 focus:ring-red-500'
+                        : 'border-gray-300 hover:border-gray-400'"
                 />
-                <p v-if="form.errors.owner_name" class="text-xs text-red-600">{{ form.errors.owner_name }}</p>
+                <p v-if="form.errors.owner_name" class="text-sm text-red-600">{{ form.errors.owner_name }}</p>
             </div>
 
             <!-- Email -->
-            <div class="space-y-1">
-                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div class="space-y-2">
+                <label for="email" class="block text-sm font-medium text-gray-700">
                     Email address
                 </label>
                 <input
@@ -123,19 +122,19 @@ const submit = () => {
                     autocomplete="email"
                     required
                     placeholder="you@example.com"
-                    class="block w-full rounded-lg border px-3 py-2 text-sm shadow-sm placeholder:text-gray-400
-                           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
-                           dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                    class="block w-full rounded-lg border px-4 py-3 text-sm shadow-sm placeholder:text-gray-400
+                           transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                           bg-white"
                     :class="form.errors.email
-                        ? 'border-red-400 text-red-900 focus:ring-red-500'
-                        : 'border-gray-300 dark:border-gray-600'"
+                        ? 'border-red-300 text-red-900 focus:ring-red-500'
+                        : 'border-gray-300 hover:border-gray-400'"
                 />
-                <p v-if="form.errors.email" class="text-xs text-red-600">{{ form.errors.email }}</p>
+                <p v-if="form.errors.email" class="text-sm text-red-600">{{ form.errors.email }}</p>
             </div>
 
             <!-- Password -->
-            <div class="space-y-1">
-                <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div class="space-y-2">
+                <label for="password" class="block text-sm font-medium text-gray-700">
                     Password
                 </label>
                 <input
@@ -145,19 +144,19 @@ const submit = () => {
                     autocomplete="new-password"
                     required
                     placeholder="Min. 8 characters"
-                    class="block w-full rounded-lg border px-3 py-2 text-sm shadow-sm placeholder:text-gray-400
-                           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
-                           dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                    class="block w-full rounded-lg border px-4 py-3 text-sm shadow-sm placeholder:text-gray-400
+                           transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                           bg-white"
                     :class="form.errors.password
-                        ? 'border-red-400 text-red-900 focus:ring-red-500'
-                        : 'border-gray-300 dark:border-gray-600'"
+                        ? 'border-red-300 text-red-900 focus:ring-red-500'
+                        : 'border-gray-300 hover:border-gray-400'"
                 />
-                <p v-if="form.errors.password" class="text-xs text-red-600">{{ form.errors.password }}</p>
+                <p v-if="form.errors.password" class="text-sm text-red-600">{{ form.errors.password }}</p>
             </div>
 
             <!-- Confirm password -->
-            <div class="space-y-1">
-                <label for="password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div class="space-y-2">
+                <label for="password_confirmation" class="block text-sm font-medium text-gray-700">
                     Confirm password
                 </label>
                 <input
@@ -166,25 +165,25 @@ const submit = () => {
                     type="password"
                     autocomplete="new-password"
                     required
-                    placeholder="••••••••"
-                    class="block w-full rounded-lg border px-3 py-2 text-sm shadow-sm placeholder:text-gray-400
-                           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
-                           dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                    placeholder="Confirm your password"
+                    class="block w-full rounded-lg border px-4 py-3 text-sm shadow-sm placeholder:text-gray-400
+                           transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                           bg-white"
                     :class="form.errors.password_confirmation
-                        ? 'border-red-400 text-red-900 focus:ring-red-500'
-                        : 'border-gray-300 dark:border-gray-600'"
+                        ? 'border-red-300 text-red-900 focus:ring-red-500'
+                        : 'border-gray-300 hover:border-gray-400'"
                 />
-                <p v-if="form.errors.password_confirmation" class="text-xs text-red-600">{{ form.errors.password_confirmation }}</p>
+                <p v-if="form.errors.password_confirmation" class="text-sm text-red-600">{{ form.errors.password_confirmation }}</p>
             </div>
 
             <!-- Submit -->
             <button
                 type="submit"
                 :disabled="form.processing"
-                class="flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm
-                       font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700
-                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2
-                       disabled:cursor-not-allowed disabled:opacity-60"
+                class="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-3 text-sm
+                       font-semibold text-white shadow-lg shadow-primary-500/50 transition-all hover:shadow-xl hover:shadow-primary-500/60 hover:from-primary-700 hover:to-primary-800
+                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2
+                       disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
             >
                 <svg
                     v-if="form.processing"
@@ -201,11 +200,11 @@ const submit = () => {
         </form>
 
         <!-- Login link -->
-        <p class="text-center text-sm text-gray-500 dark:text-gray-400">
+        <p class="text-center text-sm text-gray-600">
             Already have an account?
             <Link
                 :href="route('login')"
-                class="font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
+                class="font-semibold text-primary-600 hover:text-primary-700 transition-colors"
             >
                 Sign in
             </Link>

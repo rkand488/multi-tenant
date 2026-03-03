@@ -78,11 +78,8 @@ const socialLinks = [
 
                 <!-- Brand column -->
                 <div class="lg:col-span-2">
-                    <a href="/" class="mb-5 flex items-center gap-2.5">
-                        <div class="flex size-8 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white shadow">
-                            S
-                        </div>
-                        <span class="font-bold text-white">SaaS Platform</span>
+                    <a href="/" class="mb-5 inline-block">
+                        <img src="/logo-with-tag.png" alt="Tenantrix" class="h-12" />
                     </a>
 
                     <p class="max-w-xs text-sm leading-relaxed text-gray-500">

@@ -29,14 +29,14 @@ const submit = () => {
 
         <!-- Heading -->
         <div class="text-center">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Sign in</h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">to continue to your workspace</p>
+            <h1 class="text-3xl font-bold text-gray-900">Welcome back</h1>
+            <p class="mt-2 text-sm text-gray-600">Sign in to continue to your workspace</p>
         </div>
 
         <!-- Status message (e.g. after password reset) -->
         <div
             v-if="status"
-            class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700"
+            class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800"
         >
             {{ status }}
         </div>
@@ -45,8 +45,8 @@ const submit = () => {
         <form class="space-y-4" @submit.prevent="submit">
 
             <!-- Email -->
-            <div class="space-y-1">
-                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div class="space-y-2">
+                <label for="email" class="block text-sm font-medium text-gray-700">
                     Email address
                 </label>
                 <input
@@ -58,19 +58,19 @@ const submit = () => {
                     required
                     autofocus
                     placeholder="you@example.com"
-                    class="block w-full rounded-lg border px-3 py-2 text-sm shadow-sm placeholder:text-gray-400
-                           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
-                           dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500 bg-white"
+                    class="block w-full rounded-lg border px-4 py-3 text-sm shadow-sm placeholder:text-gray-400
+                           transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                           bg-white"
                     :class="form.errors.email
-                        ? 'border-red-400 text-red-900 focus:ring-red-500'
-                        : 'border-gray-300 dark:border-gray-600'"
+                        ? 'border-red-300 text-red-900 focus:ring-red-500'
+                        : 'border-gray-300 hover:border-gray-400'"
                 />
-                <p v-if="form.errors.email" class="text-xs text-red-600">{{ form.errors.email }}</p>
+                <p v-if="form.errors.email" class="text-sm text-red-600">{{ form.errors.email }}</p>
             </div>
 
             <!-- Password -->
-            <div class="space-y-1">
-                <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div class="space-y-2">
+                <label for="password" class="block text-sm font-medium text-gray-700">
                     Password
                 </label>
                 <input
@@ -80,32 +80,32 @@ const submit = () => {
                     name="password"
                     autocomplete="current-password"
                     required
-                    placeholder="••••••••"
-                    class="block w-full rounded-lg border px-3 py-2 text-sm shadow-sm placeholder:text-gray-400
-                           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
-                           dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500 bg-white"
+                    placeholder="Enter your password"
+                    class="block w-full rounded-lg border px-4 py-3 text-sm shadow-sm placeholder:text-gray-400
+                           transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                           bg-white"
                     :class="form.errors.password
-                        ? 'border-red-400 text-red-900 focus:ring-red-500'
-                        : 'border-gray-300 dark:border-gray-600'"
+                        ? 'border-red-300 text-red-900 focus:ring-red-500'
+                        : 'border-gray-300 hover:border-gray-400'"
                 />
-                <p v-if="form.errors.password" class="text-xs text-red-600">{{ form.errors.password }}</p>
+                <p v-if="form.errors.password" class="text-sm text-red-600">{{ form.errors.password }}</p>
             </div>
 
             <!-- Remember me + Forgot password -->
             <div class="flex items-center justify-between">
-                <label class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
+                <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
                     <input
                         v-model="form.remember"
                         type="checkbox"
                         name="remember"
-                        class="size-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                        class="size-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 cursor-pointer transition-colors"
                     />
                     Remember me
                 </label>
 
                 <Link
                     :href="route('password.request')"
-                    class="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
+                    class="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors"
                 >
                     Forgot password?
                 </Link>
@@ -115,10 +115,10 @@ const submit = () => {
             <button
                 type="submit"
                 :disabled="form.processing"
-                class="flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm
-                       font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700
-                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2
-                       disabled:cursor-not-allowed disabled:opacity-60"
+                class="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-3 text-sm
+                       font-semibold text-white shadow-lg shadow-primary-500/50 transition-all hover:shadow-xl hover:shadow-primary-500/60 hover:from-primary-700 hover:to-primary-800
+                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2
+                       disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
             >
                 <!-- Spinner -->
                 <svg
@@ -136,11 +136,11 @@ const submit = () => {
         </form>
 
         <!-- Register link -->
-        <p class="text-center text-sm text-gray-500 dark:text-gray-400">
+        <p class="text-center text-sm text-gray-600">
             Don't have an account?
             <Link
                 :href="route('register')"
-                class="font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
+                class="font-semibold text-primary-600 hover:text-primary-700 transition-colors"
             >
                 Sign up free
             </Link>

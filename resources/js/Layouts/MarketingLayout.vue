@@ -60,11 +60,8 @@ onUnmounted(() => {
             <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
 
                 <!-- Logo -->
-                <a href="/" class="flex items-center gap-2.5">
-                    <div class="flex size-8 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white shadow">
-                        S
-                    </div>
-                    <span class="font-bold text-gray-900">SaaS Platform</span>
+                <a href="/" class="flex items-center">
+                    <img src="/logo.png" alt="Tenantrix" class="h-10" />
                 </a>
 
                 <!-- Desktop nav links -->
