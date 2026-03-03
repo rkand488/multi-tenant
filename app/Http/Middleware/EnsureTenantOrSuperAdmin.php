@@ -6,25 +6,20 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureSuperAdmin
+class EnsureTenantOrSuperAdmin
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
 
-        if (! $user || ! $user->isSuperAdmin()) {
+        if (! $user || (! $user->isSuperAdmin() && ! $user->isTenantOwner() && ! $user->isTenantUser())) {
             if ($request->expectsJson()) {
                 return response()->json([
-                    'message' => 'Forbidden. Super admin access required.',
+                    'message' => 'Forbidden. Tenant or super admin access required.',
                 ], Response::HTTP_FORBIDDEN);
             }
 
-            abort(Response::HTTP_FORBIDDEN, 'Forbidden. Super admin access required.');
+            abort(Response::HTTP_FORBIDDEN, 'Forbidden. Tenant or super admin access required.');
         }
 
         return $next($request);

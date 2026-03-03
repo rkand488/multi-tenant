@@ -15,6 +15,8 @@ class Invitation extends Model
 
     use HasUuids;
 
+    protected $connection = 'central';
+
     /** @var list<string> */
     protected $fillable = [
         'tenant_id',

@@ -48,7 +48,7 @@ Route::prefix('v1')->name('api.')->group(function (): void {
                 Route::apiResource('usage-statistics', AdminUsageStatisticController::class)->only(['index']);
             });
 
-        Route::middleware(['tenant', 'tenant.active'])->group(function (): void {
+        Route::middleware(['tenant', 'tenant.active', 'tenant_or_super_admin'])->group(function (): void {
             Route::post('invitations', [InvitationController::class, 'store'])->name('invitations.store');
             Route::delete('invitations/{invitation}', [InvitationController::class, 'destroy'])->name('invitations.destroy');
 

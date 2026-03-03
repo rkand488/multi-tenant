@@ -26,7 +26,7 @@ class UpdateTenantUserRequest extends FormRequest
 
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'email' => ['sometimes', 'required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($userId)],
+            'email' => ['sometimes', 'required', 'email', 'max:255', Rule::unique('central.users', 'email')->ignore($userId)],
         ];
     }
 }
