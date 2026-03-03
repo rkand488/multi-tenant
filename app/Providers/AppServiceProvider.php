@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Central\Models\PersonalAccessToken;
 use App\Models\Invitation;
 use App\Models\User;
 use App\Policies\InvitationPolicy;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Invitation::class, InvitationPolicy::class);
 

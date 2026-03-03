@@ -24,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'feature' => \App\Http\Middleware\CheckFeatureAccess::class,
             'usage.limit' => \App\Http\Middleware\EnforceUsageLimit::class,
             'super_admin' => \App\Http\Middleware\EnsureSuperAdmin::class,
+            'tenant_or_super_admin' => \App\Http\Middleware\EnsureTenantOrSuperAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

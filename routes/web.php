@@ -29,7 +29,7 @@ Route::prefix('demo')->name('demo.')->group(function () {
     Route::get('/billing', [DemoController::class, 'billing'])->name('billing');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('tenant.dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'tenant_or_super_admin'])->name('tenant.dashboard');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [WebAuthController::class, 'showLogin'])->name('login');
@@ -44,7 +44,7 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [WebAuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 // Tenant routes
-Route::middleware('auth')->prefix('dashboard')->name('tenant.')->group(function () {
+Route::middleware(['auth', 'tenant_or_super_admin'])->prefix('dashboard')->name('tenant.')->group(function () {
     // Users / team members
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('users/create', [UserController::class, 'create'])->name('users.create');
@@ -81,7 +81,7 @@ Route::middleware('auth')->prefix('dashboard')->name('tenant.')->group(function 
 });
 
 // Admin routes
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'super_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // Tenants

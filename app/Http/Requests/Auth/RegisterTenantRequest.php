@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class RegisterTenantRequest extends FormRequest
@@ -19,7 +20,7 @@ class RegisterTenantRequest extends FormRequest
             'workspace_name' => ['required', 'string', 'max:100'],
             'slug' => ['required', 'string', 'max:63', 'regex:/^[a-z0-9-]+$/'],
             'owner_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email'],
+            'email' => ['required', 'email', Rule::unique('central.users', 'email')],
             'password' => ['required', 'confirmed', Password::defaults()],
         ];
     }
