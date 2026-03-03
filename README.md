@@ -225,6 +225,53 @@ Example markdown:
 
 ---
 
+## API Documentation
+
+This project uses [Scramble](https://scramble.dedoc.co/) for automatic OpenAPI documentation generation.
+
+### Viewing API Documentation
+
+Once your application is running, access the interactive API documentation at:
+
+```
+http://localhost/docs/api
+```
+
+### Features
+
+- **Auto-generated**: Documentation updates automatically when API endpoints change
+- **Interactive UI**: Swagger-style interface with "Try It" functionality
+- **Request/Response Examples**: Generated from FormRequest classes and controller return types
+- **Authentication Support**: Shows which endpoints require authentication
+
+### API Sections
+
+The documentation is organized into the following sections:
+
+| Section | Description |
+|---------|-------------|
+| **Authentication** | Register, login, logout, and user profile endpoints |
+| **Tenant Management** | Invitations and file storage management |
+| **Users** | CRUD operations for tenant users |
+| **Roles & Permissions** | Role assignment and permission management |
+| **Subscriptions** | Plan listing and subscription lifecycle |
+| **Billing** | Invoices and usage tracking |
+| **Settings** | Team settings configuration |
+| **Activity Logs** | Audit trail and activity tracking |
+| **Admin System** | System-wide tenant, plan, and analytics management |
+
+### Exporting OpenAPI Schema
+
+To export the OpenAPI specification as JSON:
+
+```bash
+php artisan scramble:export
+```
+
+This generates `api.json` in your project root.
+
+---
+
 ## Testing & Quality
 
 ```bash

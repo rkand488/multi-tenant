@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Tenant;
+namespace App\Http\Controllers\Api\Tenant;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\StoreTenantFileRequest;
@@ -11,6 +11,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+/**
+ * @tags Tenant Management
+ */
 class FileStorageController extends Controller
 {
     public function __construct(
@@ -19,6 +22,13 @@ class FileStorageController extends Controller
         private readonly TenantActivityLogService $activityLogService,
     ) {}
 
+    /**
+     * List files.
+     *
+     * Returns all files belonging to the current tenant.
+     *
+     * @response object
+     */
     public function index(): JsonResponse
     {
         $tenant = $this->tenantContext->get();
@@ -27,6 +37,13 @@ class FileStorageController extends Controller
         return response()->json($files);
     }
 
+    /**
+     * Upload a file.
+     *
+     * Uploads a new file to the tenant's storage.
+     *
+     * @response array{message: string, data: object}
+     */
     public function store(StoreTenantFileRequest $request): JsonResponse
     {
         $tenant = $this->tenantContext->get();
@@ -55,6 +72,13 @@ class FileStorageController extends Controller
         ], 201);
     }
 
+    /**
+     * Get file details.
+     *
+     * Returns details and download URL for a specific file.
+     *
+     * @response array{data: object, download_url: string}
+     */
     public function show(string $file): JsonResponse
     {
         $tenant = $this->tenantContext->get();
@@ -62,10 +86,17 @@ class FileStorageController extends Controller
 
         return response()->json([
             'data' => $tenantFile,
-            'download_url' => route('tenant.files.download', ['file' => $tenantFile->id]),
+            'download_url' => route('api.tenant.files.download', ['file' => $tenantFile->id]),
         ]);
     }
 
+    /**
+     * Delete a file.
+     *
+     * Removes a file from the tenant's storage.
+     *
+     * @response array{message: string}
+     */
     public function destroy(string $file): JsonResponse
     {
         $tenant = $this->tenantContext->get();
@@ -91,6 +122,11 @@ class FileStorageController extends Controller
         return response()->json(['message' => 'File deleted successfully.']);
     }
 
+    /**
+     * Download a file.
+     *
+     * Downloads a file from the tenant's storage.
+     */
     public function download(string $file): BinaryFileResponse
     {
         $tenant = $this->tenantContext->get();

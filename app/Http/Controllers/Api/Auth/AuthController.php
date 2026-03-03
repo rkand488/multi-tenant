@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Api\Auth;
 
 use App\Auth\Services\AuthenticationService;
 use App\Auth\Services\TenantRegistrationService;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Tenant;
+namespace App\Http\Controllers\Api\Tenant;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\IndexActivityLogRequest;
@@ -8,6 +8,9 @@ use App\Tenancy\TenantContext;
 use App\Tenant\Services\TenantActivityLogService;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @tags Activity Logs
+ */
 class ActivityLogController extends Controller
 {
     public function __construct(
@@ -15,6 +18,13 @@ class ActivityLogController extends Controller
         private readonly TenantActivityLogService $activityLogService,
     ) {}
 
+    /**
+     * List activity logs.
+     *
+     * Returns paginated activity logs for the current tenant.
+     *
+     * @response object
+     */
     public function index(IndexActivityLogRequest $request): JsonResponse
     {
         if (! $request->user()?->isTenantOwner()) {
@@ -32,6 +42,13 @@ class ActivityLogController extends Controller
         return response()->json($logs);
     }
 
+    /**
+     * Get activity log entry.
+     *
+     * Returns details of a specific activity log entry.
+     *
+     * @response array{data: object}
+     */
     public function show(string $activity_log): JsonResponse
     {
         if (! request()->user()?->isTenantOwner()) {

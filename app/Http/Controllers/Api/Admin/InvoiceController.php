@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Admin\Services\AdminInvoiceService;
 use App\Central\Enums\InvoiceStatus;
@@ -10,12 +10,22 @@ use App\Http\Requests\Admin\IndexInvoicesRequest;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @tags Admin System
+ */
 class InvoiceController extends Controller
 {
     public function __construct(
         private readonly AdminInvoiceService $invoiceService,
     ) {}
 
+    /**
+     * List all invoices (admin).
+     *
+     * Returns a paginated list of all invoices across all tenants. Super admin only.
+     *
+     * @response object
+     */
     public function index(IndexInvoicesRequest $request): JsonResponse
     {
         $invoices = $this->invoiceService->listInvoices(
@@ -29,6 +39,13 @@ class InvoiceController extends Controller
         return response()->json($invoices);
     }
 
+    /**
+     * Get an invoice (admin).
+     *
+     * Returns detailed information about a specific invoice. Super admin only.
+     *
+     * @response array{data: object}
+     */
     public function show(Invoice $invoice): JsonResponse
     {
         return response()->json([

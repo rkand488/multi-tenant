@@ -1,21 +1,21 @@
 <?php
 
-use App\Http\Controllers\Admin\InvoiceController as AdminInvoiceController;
-use App\Http\Controllers\Admin\PlanController as AdminPlanController;
-use App\Http\Controllers\Admin\SystemAnalyticsController as AdminSystemAnalyticsController;
-use App\Http\Controllers\Admin\TenantController as AdminTenantController;
-use App\Http\Controllers\Admin\UsageStatisticController as AdminUsageStatisticController;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Auth\InvitationController;
-use App\Http\Controllers\Billing\InvoiceController;
-use App\Http\Controllers\Billing\PlanController;
-use App\Http\Controllers\Billing\SubscriptionController;
-use App\Http\Controllers\Billing\UsageController;
-use App\Http\Controllers\Tenant\ActivityLogController as TenantActivityLogController;
-use App\Http\Controllers\Tenant\FileStorageController as TenantFileStorageController;
-use App\Http\Controllers\Tenant\RolePermissionController as TenantRolePermissionController;
-use App\Http\Controllers\Tenant\TeamSettingController as TenantTeamSettingController;
-use App\Http\Controllers\Tenant\UserController as TenantUserController;
+use App\Http\Controllers\Api\Admin\InvoiceController as AdminInvoiceController;
+use App\Http\Controllers\Api\Admin\PlanController as AdminPlanController;
+use App\Http\Controllers\Api\Admin\SystemAnalyticsController as AdminSystemAnalyticsController;
+use App\Http\Controllers\Api\Admin\TenantController as AdminTenantController;
+use App\Http\Controllers\Api\Admin\UsageStatisticController as AdminUsageStatisticController;
+use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Auth\InvitationController;
+use App\Http\Controllers\Api\Billing\InvoiceController;
+use App\Http\Controllers\Api\Billing\PlanController;
+use App\Http\Controllers\Api\Billing\SubscriptionController;
+use App\Http\Controllers\Api\Billing\UsageController;
+use App\Http\Controllers\Api\Tenant\ActivityLogController as TenantActivityLogController;
+use App\Http\Controllers\Api\Tenant\FileStorageController as TenantFileStorageController;
+use App\Http\Controllers\Api\Tenant\RolePermissionController as TenantRolePermissionController;
+use App\Http\Controllers\Api\Tenant\TeamSettingController as TenantTeamSettingController;
+use App\Http\Controllers\Api\Tenant\UserController as TenantUserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->name('api.')->group(function (): void {

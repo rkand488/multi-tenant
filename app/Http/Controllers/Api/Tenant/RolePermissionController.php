@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Tenant;
+namespace App\Http\Controllers\Api\Tenant;
 
 use App\Central\Enums\UserRole;
 use App\Http\Controllers\Controller;
@@ -11,6 +11,9 @@ use App\Tenant\Services\TenantRolePermissionService;
 use App\Tenant\Services\TenantUserService;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @tags Roles & Permissions
+ */
 class RolePermissionController extends Controller
 {
     public function __construct(
@@ -20,6 +23,13 @@ class RolePermissionController extends Controller
         private readonly TenantActivityLogService $activityLogService,
     ) {}
 
+    /**
+     * Get role permission matrix.
+     *
+     * Returns all available roles and their associated permissions.
+     *
+     * @response array{data: object}
+     */
     public function index(): JsonResponse
     {
         if (! request()->user()?->isTenantOwner()) {
@@ -31,6 +41,13 @@ class RolePermissionController extends Controller
         ]);
     }
 
+    /**
+     * Assign role to user.
+     *
+     * Updates the role assignment for a specific user.
+     *
+     * @response array{message: string, data: object}
+     */
     public function update(UpdateTenantUserRoleRequest $request, string $user): JsonResponse
     {
         if (! $request->user()?->isTenantOwner()) {

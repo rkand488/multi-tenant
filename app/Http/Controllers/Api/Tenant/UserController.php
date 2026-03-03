@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Tenant;
+namespace App\Http\Controllers\Api\Tenant;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\StoreTenantUserRequest;
@@ -11,6 +11,9 @@ use App\Tenant\Services\TenantActivityLogService;
 use App\Tenant\Services\TenantUserService;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @tags Users
+ */
 class UserController extends Controller
 {
     public function __construct(
@@ -19,6 +22,13 @@ class UserController extends Controller
         private readonly TenantActivityLogService $activityLogService,
     ) {}
 
+    /**
+     * List tenant users.
+     *
+     * Returns all users belonging to the current tenant.
+     *
+     * @response object
+     */
     public function index(): JsonResponse
     {
         $this->authorize('viewAny', User::class);
@@ -29,6 +39,13 @@ class UserController extends Controller
         return response()->json($users);
     }
 
+    /**
+     * Create a new user.
+     *
+     * Creates a new user within the current tenant.
+     *
+     * @response array{message: string, data: object}
+     */
     public function store(StoreTenantUserRequest $request): JsonResponse
     {
         if (! $request->user()?->isTenantOwner()) {
@@ -54,6 +71,13 @@ class UserController extends Controller
         ], 201);
     }
 
+    /**
+     * Get a user.
+     *
+     * Returns details of a specific tenant user.
+     *
+     * @response array{data: object}
+     */
     public function show(string $user): JsonResponse
     {
         $tenant = $this->tenantContext->get();
@@ -64,6 +88,13 @@ class UserController extends Controller
         return response()->json(['data' => $tenantUser]);
     }
 
+    /**
+     * Update a user.
+     *
+     * Updates an existing tenant user's information.
+     *
+     * @response array{message: string, data: object}
+     */
     public function update(UpdateTenantUserRequest $request, string $user): JsonResponse
     {
         $tenant = $this->tenantContext->get();
@@ -89,6 +120,13 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * Delete a user.
+     *
+     * Removes a user from the tenant.
+     *
+     * @response array{message: string}
+     */
     public function destroy(string $user): JsonResponse
     {
         $tenant = $this->tenantContext->get();

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Api\Auth;
 
 use App\Auth\Services\InvitationService;
 use App\Http\Controllers\Controller;
@@ -13,12 +13,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Manages tenant user invitations.
- *
- * The invite and destroy endpoints require the `tenant` + `tenant.active`
- * middleware stack and are authorised via InvitationPolicy.
- *
- * The show and accept endpoints are public (token-signed).
+ * @tags Tenant Management
  */
 class InvitationController extends Controller
 {
@@ -28,9 +23,11 @@ class InvitationController extends Controller
     ) {}
 
     /**
-     * POST /api/v1/invitations
+     * Send an invitation.
      *
      * Tenant owner sends an invitation to a new user.
+     *
+     * @response array{message: string, invitation: object}
      */
     public function store(InviteUserRequest $request): JsonResponse
     {
@@ -51,9 +48,13 @@ class InvitationController extends Controller
     }
 
     /**
-     * GET /api/v1/invitations/{token}
+     * Get invitation details.
      *
-     * Fetch a pending invitation (for the accept UI page).
+     * Fetch a pending invitation by token (for the accept UI page).
+     *
+     * @unauthenticated
+     *
+     * @response array{invitation: object}
      */
     public function show(string $token): JsonResponse
     {
@@ -63,9 +64,13 @@ class InvitationController extends Controller
     }
 
     /**
-     * POST /api/v1/invitations/accept
+     * Accept an invitation.
      *
      * Invited user registers an account using their invitation token.
+     *
+     * @unauthenticated
+     *
+     * @response array{message: string, user: object, token: string}
      */
     public function accept(AcceptInvitationRequest $request): JsonResponse
     {
@@ -82,9 +87,11 @@ class InvitationController extends Controller
     }
 
     /**
-     * DELETE /api/v1/invitations/{invitation}
+     * Revoke an invitation.
      *
-     * Revoke a pending invitation.
+     * Delete a pending invitation.
+     *
+     * @response array{message: string}
      */
     public function destroy(Request $request, Invitation $invitation): JsonResponse
     {

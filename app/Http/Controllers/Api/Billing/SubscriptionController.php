@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Billing;
+namespace App\Http\Controllers\Api\Billing;
 
 use App\Billing\Services\SubscriptionService;
 use App\Central\Models\Plan;
-use App\Central\Models\Subscription;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Billing\ChangePlanRequest;
 use App\Http\Requests\Billing\SubscribeRequest;
@@ -12,6 +11,9 @@ use App\Tenancy\TenantContext;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @tags Subscriptions
+ */
 class SubscriptionController extends Controller
 {
     public function __construct(
@@ -20,7 +22,11 @@ class SubscriptionController extends Controller
     ) {}
 
     /**
-     * Return the current tenant's active subscription.
+     * Get current subscription.
+     *
+     * Returns the current tenant's active subscription details.
+     *
+     * @response array{data: object|null, message?: string}
      */
     public function show(): JsonResponse
     {
@@ -35,7 +41,11 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * Subscribe the tenant to a plan.
+     * Subscribe to a plan.
+     *
+     * Creates a new subscription for the tenant to a specified plan.
+     *
+     * @response array{data: object}
      */
     public function store(SubscribeRequest $request): JsonResponse
     {
@@ -47,7 +57,11 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * Change the plan on the existing subscription.
+     * Change subscription plan.
+     *
+     * Upgrades or downgrades the existing subscription to a different plan.
+     *
+     * @response array{data: object}
      */
     public function update(ChangePlanRequest $request): JsonResponse
     {
@@ -66,7 +80,11 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * Cancel the tenant's active subscription.
+     * Cancel subscription.
+     *
+     * Cancels the tenant's active subscription. By default cancels at period end.
+     *
+     * @response array{data: object, message: string}
      */
     public function destroy(): JsonResponse
     {
@@ -84,7 +102,11 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * Resume a cancelled subscription still within its grace period.
+     * Resume cancelled subscription.
+     *
+     * Resumes a cancelled subscription that is still within its grace period.
+     *
+     * @response array{data: object, message: string}
      */
     public function resume(): JsonResponse
     {

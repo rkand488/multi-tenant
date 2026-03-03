@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Admin\Services\AdminAnalyticsService;
 use App\Http\Controllers\Controller;

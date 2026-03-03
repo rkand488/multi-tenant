@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Billing;
+namespace App\Http\Controllers\Api\Billing;
 
 use App\Billing\Services\UsageService;
 use App\Http\Controllers\Controller;

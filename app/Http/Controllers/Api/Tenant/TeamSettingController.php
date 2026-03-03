@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Tenant;
+namespace App\Http\Controllers\Api\Tenant;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\UpdateTeamSettingRequest;
@@ -9,6 +9,9 @@ use App\Tenant\Services\TenantActivityLogService;
 use App\Tenant\Services\TenantTeamSettingsService;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @tags Settings
+ */
 class TeamSettingController extends Controller
 {
     public function __construct(
@@ -17,6 +20,13 @@ class TeamSettingController extends Controller
         private readonly TenantActivityLogService $activityLogService,
     ) {}
 
+    /**
+     * Get team settings.
+     *
+     * Returns the current tenant's team settings configuration.
+     *
+     * @response array{data: object}
+     */
     public function index(): JsonResponse
     {
         if (! request()->user()?->isTenantOwner()) {
@@ -30,6 +40,13 @@ class TeamSettingController extends Controller
         ]);
     }
 
+    /**
+     * Update team settings.
+     *
+     * Updates the tenant's team settings configuration.
+     *
+     * @response array{message: string, data: object}
+     */
     public function update(UpdateTeamSettingRequest $request, string $team_setting): JsonResponse
     {
         if (! $request->user()?->isTenantOwner()) {

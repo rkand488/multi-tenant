@@ -16,10 +16,10 @@ class UserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'admin@saas.io'],
             [
-                'name'              => 'Super Admin',
-                'password'          => Hash::make('password'),
-                'role'              => UserRole::SuperAdmin,
-                'tenant_id'         => null,
+                'name' => 'Super Admin',
+                'password' => Hash::make('password'),
+                'role' => UserRole::SuperAdmin,
+                'tenant_id' => null,
                 'email_verified_at' => now(),
             ],
         );
@@ -45,7 +45,7 @@ class UserSeeder extends Seeder
             'massive-dynamic' => [
                 ['name' => 'Quinn Adams',  'email' => 'quinn@massive.example.com',     'role' => UserRole::TenantOwner],
                 ['name' => 'Avery Brown', 'email' => 'avery@massive.example.com',      'role' => UserRole::TenantUser],
-                ['name' => 'Phoenix Nash','email' => 'phoenix@massive.example.com',    'role' => UserRole::TenantUser],
+                ['name' => 'Phoenix Nash', 'email' => 'phoenix@massive.example.com',    'role' => UserRole::TenantUser],
             ],
             'soylent-corp' => [
                 ['name' => 'Blake Stone', 'email' => 'blake@soylent.example.com',      'role' => UserRole::TenantOwner],
@@ -57,6 +57,7 @@ class UserSeeder extends Seeder
 
             if (! $tenant) {
                 $this->command->warn("Tenant not found: {$slug} — skipping users");
+
                 continue;
             }
 
@@ -64,10 +65,10 @@ class UserSeeder extends Seeder
                 User::updateOrCreate(
                     ['email' => $member['email']],
                     [
-                        'name'              => $member['name'],
-                        'password'          => Hash::make('password'),
-                        'role'              => $member['role'],
-                        'tenant_id'         => $tenant->id,
+                        'name' => $member['name'],
+                        'password' => Hash::make('password'),
+                        'role' => $member['role'],
+                        'tenant_id' => $tenant->id,
                         'email_verified_at' => now(),
                     ],
                 );

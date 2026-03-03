@@ -53,13 +53,14 @@ const submit = () => {
                     id="email"
                     v-model="form.email"
                     type="email"
+                    name="email"
                     autocomplete="email"
                     required
                     autofocus
                     placeholder="you@example.com"
                     class="block w-full rounded-lg border px-3 py-2 text-sm shadow-sm placeholder:text-gray-400
                            focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
-                           dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                           dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500 bg-white"
                     :class="form.errors.email
                         ? 'border-red-400 text-red-900 focus:ring-red-500'
                         : 'border-gray-300 dark:border-gray-600'"
@@ -76,12 +77,13 @@ const submit = () => {
                     id="password"
                     v-model="form.password"
                     type="password"
+                    name="password"
                     autocomplete="current-password"
                     required
                     placeholder="••••••••"
                     class="block w-full rounded-lg border px-3 py-2 text-sm shadow-sm placeholder:text-gray-400
                            focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
-                           dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
+                           dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500 bg-white"
                     :class="form.errors.password
                         ? 'border-red-400 text-red-900 focus:ring-red-500'
                         : 'border-gray-300 dark:border-gray-600'"
@@ -91,11 +93,12 @@ const submit = () => {
 
             <!-- Remember me + Forgot password -->
             <div class="flex items-center justify-between">
-                <label class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <label class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
                     <input
                         v-model="form.remember"
                         type="checkbox"
-                        class="size-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                        name="remember"
+                        class="size-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                     />
                     Remember me
                 </label>

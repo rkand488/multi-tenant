@@ -8,6 +8,7 @@ use App\Policies\InvitationPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,6 +22,11 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Invitation::class, InvitationPolicy::class);
+
+        // Route model binding for central database models
+        Route::bind('plan', function (string $value) {
+            return \App\Central\Models\Plan::on('central')->findOrFail($value);
+        });
 
         // All factories live in Database\Factories regardless of model namespace.
         // Strip sub-namespaces so e.g. App\Central\Models\Plan resolves to
