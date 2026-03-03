@@ -10,13 +10,13 @@
     /* ========================================================================
        BRAND IDENTITY - Hexagonal Multi-Tenant Cube
        ======================================================================== */
-    
+
     /* Primary Brand Colors */
     --color-brand-deep-blue: #1e3a8a;
     --color-brand-royal-blue: #2563eb;
     --color-brand-teal: #06b6d4;
     --color-brand-indigo: #7c3aed;
-    
+
     /* Primary Color Scale (Deep Blue) */
     --color-primary-50: #eff6ff;
     --color-primary-100: #dbeafe;
@@ -29,7 +29,7 @@
     --color-primary-800: #1e3a8a;  /* Deep Blue - Dark Primary */
     --color-primary-900: #1e293b;
     --color-primary-950: #0f172a;
-    
+
     /* Secondary Color Scale (Teal) */
     --color-secondary-50: #ecfeff;
     --color-secondary-100: #cffafe;
@@ -42,7 +42,7 @@
     --color-secondary-800: #155e75;
     --color-secondary-900: #164e63;
     --color-secondary-950: #083344;
-    
+
     /* Accent Color Scale (Indigo) */
     --color-accent-50: #faf5ff;
     --color-accent-100: #f3e8ff;
@@ -55,7 +55,7 @@
     --color-accent-800: #5b21b6;
     --color-accent-900: #4c1d95;
     --color-accent-950: #2e1065;
-    
+
     /* Success */
     --color-success-50: #f0fdf4;
     --color-success-100: #dcfce7;
@@ -67,7 +67,7 @@
     --color-success-700: #15803d;
     --color-success-800: #166534;
     --color-success-900: #14532d;
-    
+
     /* Warning */
     --color-warning-50: #fffbeb;
     --color-warning-100: #fef3c7;
@@ -79,7 +79,7 @@
     --color-warning-700: #b45309;
     --color-warning-800: #92400e;
     --color-warning-900: #78350f;
-    
+
     /* Error/Danger */
     --color-error-50: #fef2f2;
     --color-error-100: #fee2e2;
@@ -91,7 +91,7 @@
     --color-error-700: #b91c1c;
     --color-error-800: #991b1b;
     --color-error-900: #7f1d1d;
-    
+
     /* Neutral Grays (Light Mode) */
     --color-gray-50: #f9fafb;
     --color-gray-100: #f3f4f6;
@@ -104,7 +104,7 @@
     --color-gray-800: #1f2937;
     --color-gray-900: #111827;
     --color-gray-950: #030712;
-    
+
     /* Dark Mode Colors */
     --color-dark-bg: #0f172a;
     --color-dark-bg-secondary: #1e293b;
@@ -114,30 +114,30 @@
     --color-dark-text: #f1f5f9;
     --color-dark-text-secondary: #cbd5e1;
     --color-dark-text-tertiary: #94a3b8;
-    
+
     /* Background Colors */
     --color-background: #ffffff;
     --color-background-secondary: #f9fafb;
     --color-background-tertiary: #f3f4f6;
     --color-muted: #f3f4f6;
-    
+
     /* Border Colors */
     --color-border: #e5e7eb;
     --color-border-secondary: #d1d5db;
-    
+
     /* Typography */
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    
+
     /* Spacing Scale (Enhanced for Enterprise UI) */
-    --spacing-xs: 0.25rem;    /* 4px */
-    --spacing-sm: 0.5rem;     /* 8px */
-    --spacing-md: 1rem;       /* 16px */
-    --spacing-lg: 1.5rem;     /* 24px */
-    --spacing-xl: 2rem;       /* 32px */
-    --spacing-2xl: 3rem;      /* 48px */
-    --spacing-3xl: 4rem;      /* 64px */
-    
+    --space-xs: 0.25rem;    /* 4px */
+    --space-sm: 0.5rem;     /* 8px */
+    --space-md: 1rem;       /* 16px */
+    --space-lg: 1.5rem;     /* 24px */
+    --space-xl: 2rem;       /* 32px */
+    --space-2xl: 3rem;      /* 48px */
+    --space-3xl: 4rem;      /* 64px */
+
     /* Border Radius */
     --radius-sm: 0.375rem;    /* 6px */
     --radius-md: 0.5rem;      /* 8px */
@@ -145,20 +145,20 @@
     --radius-xl: 1rem;        /* 16px */
     --radius-2xl: 1.5rem;     /* 24px */
     --radius-full: 9999px;
-    
+
     /* Shadows (Brand-aware) */
     --shadow-sm: 0 1px 2px 0 rgba(30, 58, 138, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(30, 58, 138, 0.1), 0 2px 4px -1px rgba(30, 58, 138, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(30, 58, 138, 0.1), 0 4px 6px -2px rgba(30, 58, 138, 0.05);
     --shadow-xl: 0 20px 25px -5px rgba(30, 58, 138, 0.1), 0 10px 10px -5px rgba(30, 58, 138, 0.04);
     --shadow-2xl: 0 25px 50px -12px rgba(30, 58, 138, 0.25);
-    
+
     /* Brand Gradients */
     --gradient-primary: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #06b6d4 100%);
     --gradient-hero: linear-gradient(135deg, #1e3a8a 0%, #2563eb 35%, #06b6d4 70%, #7c3aed 100%);
     --gradient-accent: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
     --gradient-subtle: linear-gradient(180deg, rgba(37, 99, 235, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
-    
+
     /* Z-Index Scale */
     --z-dropdown: 1000;
     --z-sticky: 1020;

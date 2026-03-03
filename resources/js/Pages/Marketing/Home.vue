@@ -174,7 +174,7 @@ onMounted(() => {
                     style="background-image: radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 1px); background-size: 24px 24px;"
                 />
 
-                <div class="mx-auto max-w-3xl px-6 text-center" data-animate>
+                <div class="mx-auto max-w-4xl px-6 text-center" data-animate>
                     <h2 class="text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
                         Start building your SaaS today.
                     </h2>

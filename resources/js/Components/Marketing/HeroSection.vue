@@ -180,7 +180,7 @@ onMounted(() => {
                 </div>
 
                 <!-- ── Right: Dashboard mockup ─────────────────────────────── -->
-                <div class="hero-mockup relative mx-auto w-full max-w-2xl lg:mx-0">
+                <div class="hero-mockup relative mx-auto w-full lg:mx-0">
 
                     <!-- Glow behind the card -->
                     <div class="absolute inset-x-4 top-6 h-full rounded-3xl bg-primary-600/20 blur-2xl" />
