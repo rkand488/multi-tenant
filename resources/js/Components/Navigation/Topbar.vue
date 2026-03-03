@@ -43,6 +43,9 @@ const emit = defineEmits([
             <Bars3Icon class="size-5" />
         </button>
 
+        <!-- Mobile logo (shown only when sidebar is closed on small screens) -->
+        <img src="/logo.png" alt="Tenantrix" class="size-7 shrink-0 object-contain lg:hidden" />
+
         <!-- Desktop collapse toggle -->
         <button
             class="hidden size-9 items-center justify-center rounded-xl text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200 lg:flex"

@@ -73,14 +73,12 @@ const isActive = (href) => page.url.startsWith(href.replace(window.location.orig
 
         <!-- ─── Sidebar ────────────────────────────────────────────────── -->
         <aside
-            class="fixed inset-y-0 left-0 z-30 flex w-64 flex-col bg-gray-900 transition-transform duration-200 ease-in-out lg:static lg:translate-x-0"
+            class="fixed inset-y-0 left-0 z-30 flex w-64 flex-col bg-primary-800 transition-transform duration-200 ease-in-out lg:static lg:translate-x-0"
             :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
         >
             <!-- Logo -->
-            <div class="flex h-16 shrink-0 items-center gap-3 border-b border-white/10 px-6">
-                <div class="flex size-8 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white shadow">
-                    S
-                </div>
+            <div class="flex h-16 shrink-0 items-center gap-3 border-b border-white/10 px-5">
+                <img src="/logo.png" alt="Tenantrix" class="size-8 shrink-0 object-contain" />
                 <span class="text-sm font-semibold tracking-wide text-white">Super Admin</span>
             </div>
 
@@ -92,8 +90,8 @@ const isActive = (href) => page.url.startsWith(href.replace(window.location.orig
                     :href="item.href"
                     class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
                     :class="isActive(item.href)
-                        ? 'bg-indigo-600 text-white shadow-sm'
-                        : 'text-gray-400 hover:bg-white/10 hover:text-white'"
+                        ? 'bg-white/15 text-white shadow-sm ring-1 ring-white/20'
+                        : 'text-blue-100/80 hover:bg-white/10 hover:text-white'"
                 >
                     <component :is="item.icon" class="size-5 shrink-0" />
                     {{ item.label }}
@@ -103,7 +101,7 @@ const isActive = (href) => page.url.startsWith(href.replace(window.location.orig
             <!-- Sidebar footer -->
             <div class="shrink-0 border-t border-white/10 px-4 py-3">
                 <div class="flex items-center gap-3">
-                    <div class="flex size-8 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-semibold text-white">
+                    <div class="flex size-8 shrink-0 items-center justify-center rounded-full bg-white/20 text-xs font-semibold text-white ring-1 ring-white/30">
                         {{ auth?.user?.name?.[0]?.toUpperCase() ?? 'A' }}
                     </div>
                     <div class="min-w-0 flex-1">
@@ -127,6 +125,9 @@ const isActive = (href) => page.url.startsWith(href.replace(window.location.orig
                 >
                     <Bars3Icon class="size-5" />
                 </button>
+
+                <!-- Mobile logo -->
+                <img src="/logo.png" alt="Tenantrix" class="size-7 shrink-0 object-contain lg:hidden" />
 
                 <!-- Page title slot (optional — filled via named slot from page) -->
                 <div class="hidden flex-1 text-sm font-semibold text-gray-700 md:block dark:text-gray-200">
@@ -170,7 +171,7 @@ const isActive = (href) => page.url.startsWith(href.replace(window.location.orig
                                     <button
                                         v-if="unreadCount > 0"
                                         type="button"
-                                        class="text-xs text-indigo-600 hover:underline dark:text-indigo-400"
+                                        class="text-xs text-primary-600 hover:underline dark:text-primary-400"
                                         @click="markAllRead"
                                     >
                                         Mark all read
@@ -182,7 +183,7 @@ const isActive = (href) => page.url.startsWith(href.replace(window.location.orig
                                         v-for="notif in notifications"
                                         :key="notif.id"
                                         class="flex gap-3 px-4 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/40"
-                                        :class="!notif.read ? 'bg-indigo-50/60 dark:bg-indigo-900/10' : ''"
+                                        :class="!notif.read ? 'bg-primary-50/60 dark:bg-primary-900/10' : ''"
                                     >
                                         <div class="mt-0.5 shrink-0">
                                             <CheckCircleIcon
@@ -191,7 +192,7 @@ const isActive = (href) => page.url.startsWith(href.replace(window.location.orig
                                             />
                                             <span
                                                 v-else
-                                                class="block size-2 rounded-full bg-indigo-500 mt-1"
+                                                class="block size-2 rounded-full bg-primary-500 mt-1"
                                             />
                                         </div>
                                         <div class="min-w-0 flex-1" @click="markRead(notif)">
@@ -211,7 +212,7 @@ const isActive = (href) => page.url.startsWith(href.replace(window.location.orig
                     <!-- ── User menu ──────────────────────────────────── -->
                     <Menu as="div" class="relative">
                         <MenuButton class="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800">
-                            <div class="flex size-8 items-center justify-center rounded-full bg-indigo-600 text-xs font-semibold text-white">
+                            <div class="flex size-8 items-center justify-center rounded-full bg-gradient-primary text-xs font-semibold text-white">
                                 {{ auth?.user?.name?.[0]?.toUpperCase() ?? 'A' }}
                             </div>
                             <span class="hidden text-sm font-medium sm:block">{{ auth?.user?.name }}</span>

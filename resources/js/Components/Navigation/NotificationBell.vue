@@ -40,7 +40,7 @@ const typeIconClass = (type) => ({
     warning: 'text-amber-500',
     error:   'text-red-500',
     success: 'text-green-500',
-})[type] ?? 'text-indigo-500';
+})[type] ?? 'text-primary-600';
 
 const markRead    = (id) => emit('mark-read', id);
 const markAllRead = () => emit('mark-all-read');
@@ -86,7 +86,7 @@ const markAllRead = () => emit('mark-all-read');
                         <span class="text-sm font-semibold text-gray-900 dark:text-white">Notifications</span>
                         <span
                             v-if="hasUnread"
-                            class="inline-flex items-center rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-semibold text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
+                            class="inline-flex items-center rounded-full bg-primary-50 px-2 py-0.5 text-xs font-semibold text-primary-600 dark:bg-primary-900/30 dark:text-primary-400"
                         >
                             {{ unreadCount }} new
                         </span>
@@ -95,7 +95,7 @@ const markAllRead = () => emit('mark-all-read');
                     <div class="flex items-center gap-1">
                         <button
                             v-if="hasUnread"
-                            class="rounded-lg px-2.5 py-1 text-xs font-medium text-indigo-600 transition hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/20"
+                            class="rounded-lg px-2.5 py-1 text-xs font-medium text-primary-600 transition hover:bg-primary-50 dark:text-primary-400 dark:hover:bg-primary-900/20"
                             @click="markAllRead"
                         >
                             Mark all read
@@ -126,7 +126,7 @@ const markAllRead = () => emit('mark-all-read');
                         v-for="notif in notifications"
                         :key="notif.id"
                         class="group relative flex gap-3 border-b border-gray-50 px-4 py-3 transition last:border-0 dark:border-gray-800/60"
-                        :class="!notif.read ? 'bg-indigo-50/40 dark:bg-indigo-900/5' : 'hover:bg-gray-50 dark:hover:bg-gray-800/40'"
+                        :class="!notif.read ? 'bg-primary-50/40 dark:bg-primary-900/5' : 'hover:bg-gray-50 dark:hover:bg-gray-800/40'"
                     >
                         <!-- Type icon -->
                         <div class="mt-0.5 shrink-0">
@@ -158,13 +158,13 @@ const markAllRead = () => emit('mark-all-read');
                         <!-- Unread dot -->
                         <div
                             v-if="!notif.read"
-                            class="mt-1.5 size-2 shrink-0 rounded-full bg-indigo-500"
+                            class="mt-1.5 size-2 shrink-0 rounded-full bg-primary-500"
                         />
 
                         <!-- Per-item mark-read on hover -->
                         <button
                             v-if="!notif.read"
-                            class="absolute right-3 top-3 hidden rounded-lg p-1 text-gray-400 transition hover:bg-white hover:text-indigo-600 group-hover:flex dark:hover:bg-gray-800"
+                            class="absolute right-3 top-3 hidden rounded-lg p-1 text-gray-400 transition hover:bg-white hover:text-primary-600 group-hover:flex dark:hover:bg-gray-800"
                             title="Mark as read"
                             @click.stop="markRead(notif.id)"
                         >
@@ -178,7 +178,7 @@ const markAllRead = () => emit('mark-all-read');
                     v-if="notifications.length"
                     class="border-t border-gray-100 px-4 py-2.5 text-center dark:border-gray-800"
                 >
-                    <button class="text-xs font-medium text-indigo-600 transition hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300">
+                    <button class="text-xs font-medium text-primary-600 transition hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300">
                         View all notifications
                     </button>
                 </div>

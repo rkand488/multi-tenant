@@ -40,7 +40,7 @@ const initials = computed(() => {
             class="group flex items-center gap-2.5 rounded-xl px-2.5 py-1.5 text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
         >
             <!-- Avatar -->
-            <span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-xs font-bold text-white ring-2 ring-white dark:ring-gray-900">
+            <span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary-600 to-secondary-500 text-xs font-bold text-white ring-2 ring-white dark:ring-gray-900">
                 {{ initials }}
             </span>
 
@@ -68,7 +68,7 @@ const initials = computed(() => {
                 <!-- Account header -->
                 <div class="px-4 py-3">
                     <div class="flex items-center gap-3">
-                        <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-sm font-bold text-white">
+                        <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary-600 to-secondary-500 text-sm font-bold text-white">
                             {{ initials }}
                         </span>
                         <div class="min-w-0">
@@ -86,7 +86,7 @@ const initials = computed(() => {
                         <span class="truncate text-xs text-gray-600 dark:text-gray-300">{{ tenant.name }}</span>
                         <span
                             v-if="tenant.plan_name"
-                            class="ml-auto shrink-0 rounded-full bg-indigo-50 px-1.5 py-0.5 text-[9px] font-semibold text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-400"
+                            class="ml-auto shrink-0 rounded-full bg-primary-50 px-1.5 py-0.5 text-[9px] font-semibold text-primary-600 dark:bg-primary-900/40 dark:text-primary-400"
                         >
                             {{ tenant.plan_name }}
                         </span>

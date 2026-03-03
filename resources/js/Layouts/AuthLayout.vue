@@ -18,12 +18,16 @@
             </a>
 
             <!-- Card -->
-            <div class="mx-auto w-full max-w-xl rounded-2xl bg-white/95 backdrop-blur-sm px-10 py-12 shadow-2xl ring-1 ring-gray-200/50">
-                <slot />
+            <div class="mx-auto w-full max-w-xl overflow-hidden rounded-2xl bg-white/95 backdrop-blur-sm shadow-2xl ring-1 ring-white/20">
+                <!-- Brand gradient top strip -->
+                <div class="h-1.5 w-full bg-gradient-primary" />
+                <div class="px-10 py-12">
+                    <slot />
+                </div>
             </div>
 
             <!-- Footer -->
-            <p class="mt-8 text-center text-sm text-white/70">
+            <p class="mt-8 text-center text-sm text-white/50">
                 &copy; {{ new Date().getFullYear() }} {{ $page.props.appName ?? 'Tenantrix' }}. All rights reserved.
             </p>
         </div>
