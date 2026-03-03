@@ -48,11 +48,11 @@ const faqs = [
 ];
 
 const categoryColors = {
-    Architecture: 'bg-indigo-50 text-indigo-700',
-    Plans: 'bg-violet-50 text-violet-700',
-    Developer: 'bg-sky-50 text-sky-700',
-    Billing: 'bg-emerald-50 text-emerald-700',
-    Support: 'bg-amber-50 text-amber-700',
+    Architecture: 'bg-primary-50 text-primary-700',
+    Plans: 'bg-accent-50 text-accent-700',
+    Developer: 'bg-secondary-50 text-secondary-700',
+    Billing: 'bg-success-50 text-success-700',
+    Support: 'bg-warning-50 text-warning-700',
 };
 
 // ── Accordion state ────────────────────────────────────────────────────────────
@@ -87,7 +87,7 @@ onMounted(() => {
 
             <!-- Heading -->
             <div class="mb-12 text-center" data-faq-animate>
-                <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-600">FAQ</p>
+                <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-primary-600">FAQ</p>
                 <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
                     Frequently asked questions
                 </h2>
@@ -103,7 +103,7 @@ onMounted(() => {
                     :key="faq.question"
                     class="faq-item overflow-hidden rounded-xl border bg-white transition-all duration-200"
                     :class="openIndex === i
-                        ? 'border-indigo-200 shadow-sm shadow-indigo-100'
+                        ? 'border-primary-200 shadow-sm shadow-primary-100'
                         : 'border-gray-200 hover:border-gray-300'"
                 >
                     <!-- Trigger -->
@@ -122,7 +122,7 @@ onMounted(() => {
                         </div>
                         <ChevronDownIcon
                             class="size-5 shrink-0 transition-transform duration-300"
-                            :class="openIndex === i ? 'rotate-180 text-indigo-600' : 'text-gray-400'"
+                            :class="openIndex === i ? 'rotate-180 text-primary-600' : 'text-gray-400'"
                         />
                     </button>
 
@@ -135,7 +135,7 @@ onMounted(() => {
                         leave-from-class="opacity-100 max-h-96"
                         leave-to-class="opacity-0 max-h-0"
                     >
-                        <div v-if="openIndex === i" class="border-t border-indigo-100 bg-indigo-50/30 px-6 pb-5 pt-4">
+                        <div v-if="openIndex === i" class="border-t border-primary-100 bg-primary-50/30 px-6 pb-5 pt-4">
                             <p class="text-sm leading-relaxed text-gray-600">{{ faq.answer }}</p>
                         </div>
                     </Transition>
@@ -143,10 +143,10 @@ onMounted(() => {
             </div>
 
             <!-- Bottom CTA -->
-            <div class="mt-12 rounded-2xl border border-indigo-100 bg-white p-6 text-center" data-faq-animate style="transition-delay: 200ms">
+            <div class="mt-12 rounded-2xl border border-primary-100 bg-white p-6 text-center" data-faq-animate style="transition-delay: 200ms">
                 <p class="text-sm text-gray-600">
                     Still have questions?
-                    <a href="mailto:support@yoursaas.com" class="font-semibold text-indigo-600 hover:underline">Talk to our team →</a>
+                    <a href="mailto:support@yoursaas.com" class="font-semibold text-primary-600 hover:underline">Talk to our team →</a>
                 </p>
             </div>
 

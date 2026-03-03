@@ -81,7 +81,7 @@ const submit = () => {
                         autocomplete="off"
                         required
                         placeholder="acme-corp"
-                        class="block w-full px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-inset
+                        class="flex-1 min-w-0 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-inset
                                focus:ring-primary-500 bg-white"
                     />
                 </div>

@@ -48,10 +48,10 @@ function animateBars() {
 // ── Live activity feed ────────────────────────────────────────────────────────
 
 const activityItems = [
-    { icon: UsersIcon,   color: 'bg-indigo-100 text-indigo-600',  text: 'Acme Corp invited 3 members',       time: '2s ago' },
-    { icon: CreditCardIcon, color: 'bg-emerald-100 text-emerald-600', text: 'Globex upgraded to Pro plan',   time: '1m ago' },
-    { icon: BoltIcon,    color: 'bg-violet-100 text-violet-600',   text: 'API — 12K requests this hour',      time: '3m ago' },
-    { icon: CheckCircleIcon, color: 'bg-sky-100 text-sky-600',    text: 'Soylent Inc. provisioned',          time: '5m ago' },
+    { icon: UsersIcon,   color: 'bg-primary-100 text-primary-600',  text: 'Acme Corp invited 3 members',       time: '2s ago' },
+    { icon: CreditCardIcon, color: 'bg-success-100 text-success-600', text: 'Globex upgraded to Pro plan',   time: '1m ago' },
+    { icon: BoltIcon,    color: 'bg-accent-100 text-accent-600',   text: 'API — 12K requests this hour',      time: '3m ago' },
+    { icon: CheckCircleIcon, color: 'bg-secondary-100 text-secondary-600',    text: 'Soylent Inc. provisioned',          time: '5m ago' },
 ];
 
 const visibleActivity = ref(0);
@@ -80,11 +80,11 @@ onMounted(() => {
         <!-- ── Animated mesh gradient background ───────────────────────────── -->
         <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
             <!-- Primary orb -->
-            <div class="orb-1 absolute -left-32 -top-32 size-[640px] rounded-full bg-indigo-600/20 blur-3xl" />
+            <div class="orb-1 absolute -left-32 -top-32 size-[640px] rounded-full bg-primary-600/20 blur-3xl" />
             <!-- Secondary orb -->
-            <div class="orb-2 absolute -right-48 top-16 size-[540px] rounded-full bg-violet-600/15 blur-3xl" />
+            <div class="orb-2 absolute -right-48 top-16 size-[540px] rounded-full bg-accent-600/15 blur-3xl" />
             <!-- Tertiary orb -->
-            <div class="orb-3 absolute -bottom-40 left-1/3 size-[480px] rounded-full bg-sky-600/10 blur-3xl" />
+            <div class="orb-3 absolute -bottom-40 left-1/3 size-[480px] rounded-full bg-secondary-600/10 blur-3xl" />
             <!-- Grid overlay -->
             <div class="hero-grid absolute inset-0 opacity-[0.04]"
                 style="background-image: linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px); background-size: 48px 48px;"
@@ -100,7 +100,7 @@ onMounted(() => {
                 <div class="hero-copy text-center lg:text-left">
 
                     <!-- Eyebrow badge -->
-                    <div class="hero-badge mb-6 inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-indigo-300">
+                    <div class="hero-badge mb-6 inline-flex items-center gap-2 rounded-full border border-primary-500/30 bg-primary-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary-300">
                         <SparklesIcon class="size-3.5 animate-pulse" />
                         Multi-Tenant SaaS Platform
                     </div>
@@ -109,12 +109,12 @@ onMounted(() => {
                     <h1 class="hero-headline text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.4rem] xl:text-6xl">
                         Build and Manage
                         <span class="relative block">
-                            <span class="gradient-text bg-gradient-to-r from-indigo-400 via-violet-400 to-sky-400 bg-clip-text text-transparent">
+                            <span class="text-gradient-hero">
                                 Multi-Tenant SaaS
                             </span>
                         </span>
                         Applications
-                        <span class="gradient-text bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+                        <span class="text-gradient-primary">
                             Effortlessly
                         </span>
                     </h1>
@@ -128,7 +128,7 @@ onMounted(() => {
                     <div class="hero-cta mt-9 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
                         <Link
                             :href="route('register')"
-                            class="group inline-flex items-center gap-2.5 rounded-xl bg-indigo-600 px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-900/40 transition-all duration-200 hover:bg-indigo-500 hover:shadow-indigo-600/50 hover:shadow-xl active:scale-[0.97]"
+                            class="group inline-flex items-center gap-2.5 rounded-xl bg-primary-600 px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-primary-900/40 transition-all duration-200 hover:bg-primary-500 hover:shadow-primary-600/50 hover:shadow-xl active:scale-[0.97]"
                         >
                             Start Building Free
                             <ArrowRightIcon class="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -157,7 +157,7 @@ onMounted(() => {
                         </div>
                         <div class="text-center sm:text-left">
                             <div class="flex items-center justify-center gap-0.5 sm:justify-start">
-                                <span v-for="s in 5" :key="s" class="text-amber-400 text-sm">★</span>
+                                <span v-for="s in 5" :key="s" class="text-warning-400 text-sm">★</span>
                             </div>
                             <p class="text-xs text-gray-400">
                                 <span class="font-semibold text-gray-200">500+ teams</span> trust this platform
@@ -183,7 +183,7 @@ onMounted(() => {
                 <div class="hero-mockup relative mx-auto w-full max-w-2xl lg:mx-0">
 
                     <!-- Glow behind the card -->
-                    <div class="absolute inset-x-4 top-6 h-full rounded-3xl bg-indigo-600/20 blur-2xl" />
+                    <div class="absolute inset-x-4 top-6 h-full rounded-3xl bg-primary-600/20 blur-2xl" />
 
                     <!-- Browser chrome shell -->
                     <div class="relative overflow-hidden rounded-2xl border border-gray-700/80 bg-gray-900 shadow-[0_24px_80px_rgba(0,0,0,0.6)] ring-1 ring-white/5">
@@ -191,8 +191,8 @@ onMounted(() => {
                         <!-- Chrome bar -->
                         <div class="flex h-10 items-center gap-2 border-b border-gray-700/60 bg-gray-800/80 px-4 backdrop-blur">
                             <span class="size-3 rounded-full bg-red-500/70" />
-                            <span class="size-3 rounded-full bg-amber-500/70" />
-                            <span class="size-3 rounded-full bg-emerald-500/70" />
+                            <span class="size-3 rounded-full bg-warning-500/70" />
+                            <span class="size-3 rounded-full bg-success-500/70" />
                             <div class="mx-3 flex-1 rounded-md border border-gray-600/50 bg-gray-700/50 px-3 py-1 text-xs text-gray-400">
                                 app.yoursaas.com/dashboard
                             </div>
@@ -205,14 +205,14 @@ onMounted(() => {
                             <div class="flex w-12 shrink-0 flex-col items-center gap-3 border-r border-gray-700/50 bg-gray-900/80 py-4 sm:w-44 sm:items-start sm:px-3">
                                 <!-- Workspace selector -->
                                 <div class="hidden w-full items-center gap-2 rounded-lg bg-gray-700/50 px-2 py-1.5 sm:flex">
-                                    <div class="flex size-5 items-center justify-center rounded bg-indigo-600 text-xs font-bold text-white">A</div>
+                                    <div class="flex size-5 items-center justify-center rounded bg-primary-600 text-xs font-bold text-white">A</div>
                                     <span class="flex-1 truncate text-xs font-semibold text-white">Acme Corp</span>
                                 </div>
                                 <!-- Nav items -->
                                 <nav class="mt-1 w-full space-y-0.5">
                                     <div
                                         v-for="(item, i) in [
-                                            { label: 'Dashboard', dot: 'bg-indigo-500' },
+                                            { label: 'Dashboard', dot: 'bg-primary-500' },
                                             { label: 'Analytics', dot: 'bg-gray-600' },
                                             { label: 'Users', dot: 'bg-gray-600' },
                                             { label: 'Billing', dot: 'bg-gray-600' },
@@ -221,7 +221,7 @@ onMounted(() => {
                                         :key="item.label"
                                         class="flex h-7 items-center gap-2 rounded-lg px-2 text-xs"
                                         :class="i === 0
-                                            ? 'bg-indigo-600/80 text-white font-semibold'
+                                            ? 'bg-primary-600/80 text-white font-semibold'
                                             : 'text-gray-500 hover:text-gray-300'"
                                     >
                                         <span class="size-1.5 shrink-0 rounded-full" :class="item.dot" />
@@ -249,10 +249,10 @@ onMounted(() => {
                                 <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
                                     <div
                                         v-for="kpi in [
-                                            { label: 'MRR', value: mrrDisplay, change: '+8.3%', up: true, accent: 'border-t-indigo-500' },
-                                            { label: 'Tenants', value: tenantsDisplay, change: '+28', up: true, accent: 'border-t-violet-500' },
-                                            { label: 'Active Users', value: usersDisplay, change: '+156', up: true, accent: 'border-t-sky-500' },
-                                            { label: 'Uptime', value: uptimeDisplay, change: 'SLA met', up: true, accent: 'border-t-emerald-500' },
+                                            { label: 'MRR', value: mrrDisplay, change: '+8.3%', up: true, accent: 'border-t-primary-500' },
+                                            { label: 'Tenants', value: tenantsDisplay, change: '+28', up: true, accent: 'border-t-accent-500' },
+                                            { label: 'Active Users', value: usersDisplay, change: '+156', up: true, accent: 'border-t-secondary-500' },
+                                            { label: 'Uptime', value: uptimeDisplay, change: 'SLA met', up: true, accent: 'border-t-success-500' },
                                         ]"
                                         :key="kpi.label"
                                         class="rounded-xl border border-gray-700/60 bg-gray-800/60 p-2.5 backdrop-blur"
@@ -260,7 +260,7 @@ onMounted(() => {
                                     >
                                         <p class="text-[10px] font-medium text-gray-500">{{ kpi.label }}</p>
                                         <p class="mt-0.5 text-sm font-bold tabular-nums text-white sm:text-base">{{ kpi.value }}</p>
-                                        <p class="mt-0.5 text-[10px] font-semibold text-emerald-400">
+                                        <p class="mt-0.5 text-[10px] font-semibold text-success-400">
                                             ↑ {{ kpi.change }}
                                         </p>
                                     </div>
@@ -281,7 +281,7 @@ onMounted(() => {
                                                     v-for="r in ['1M', '3M', '1Y']"
                                                     :key="r"
                                                     class="cursor-pointer rounded-md px-2 py-0.5 text-[10px] font-medium"
-                                                    :class="r === '1Y' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:text-gray-300'"
+                                                    :class="r === '1Y' ? 'bg-primary-600 text-white' : 'text-gray-500 hover:text-gray-300'"
                                                 >
                                                     {{ r }}
                                                 </span>
@@ -294,9 +294,9 @@ onMounted(() => {
                                                 :key="i"
                                                 class="group relative flex-1 cursor-pointer rounded-t transition-all duration-500 ease-out"
                                                 :class="i === rawHeights.length - 1
-                                                    ? 'bg-indigo-500 hover:bg-indigo-400'
+                                                    ? 'bg-primary-500 hover:bg-primary-400'
                                                     : i >= rawHeights.length - 3
-                                                        ? 'bg-indigo-700/80 hover:bg-indigo-600'
+                                                        ? 'bg-primary-700/80 hover:bg-primary-600'
                                                         : 'bg-gray-700 hover:bg-gray-600'"
                                                 :style="{ height: h + '%' }"
                                             >
@@ -316,8 +316,8 @@ onMounted(() => {
                                     <div class="rounded-xl border border-gray-700/60 bg-gray-800/50 p-3">
                                         <div class="mb-2.5 flex items-center justify-between">
                                             <p class="text-xs font-semibold text-white">Live Activity</p>
-                                            <span class="flex items-center gap-1 text-[10px] text-emerald-400">
-                                                <span class="size-1.5 animate-pulse rounded-full bg-emerald-400" />
+                                            <span class="flex items-center gap-1 text-[10px] text-success-400">
+                                                <span class="size-1.5 animate-pulse rounded-full bg-success-400" />
                                                 Live
                                             </span>
                                         </div>
@@ -352,7 +352,7 @@ onMounted(() => {
                                     <span
                                         v-for="t in ['Acme Corp', 'Globex', 'Initech', 'Umbrella', 'Soylent']"
                                         :key="t"
-                                        class="rounded-full border border-emerald-700/50 bg-emerald-900/30 px-2 py-0.5 text-[10px] font-medium text-emerald-400"
+                                        class="rounded-full border border-success-700/50 bg-success-900/30 px-2 py-0.5 text-[10px] font-medium text-success-400"
                                     >
                                         {{ t }}
                                     </span>
@@ -365,8 +365,8 @@ onMounted(() => {
                     <!-- Floating notification card — bottom-left -->
                     <div class="absolute -bottom-5 -left-5 hidden w-56 animate-[float_3s_ease-in-out_infinite] rounded-2xl border border-gray-700/60 bg-gray-800/95 p-3.5 shadow-2xl backdrop-blur ring-1 ring-white/5 sm:block">
                         <div class="flex items-center gap-3">
-                            <div class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15">
-                                <CheckCircleSolid class="size-5 text-emerald-400" />
+                            <div class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-success-500/15">
+                                <CheckCircleSolid class="size-5 text-success-400" />
                             </div>
                             <div>
                                 <p class="text-xs font-semibold text-white">New tenant live</p>
@@ -379,20 +379,20 @@ onMounted(() => {
                     <!-- Floating MRR badge — top-right -->
                     <div class="absolute -right-5 -top-5 hidden rounded-2xl border border-gray-700/60 bg-gray-800/95 px-4 py-3 shadow-2xl backdrop-blur ring-1 ring-white/5 sm:block">
                         <div class="flex items-center gap-2.5">
-                            <ArrowTrendingUpIcon class="size-5 text-emerald-400" />
+                            <ArrowTrendingUpIcon class="size-5 text-success-400" />
                             <div>
                                 <p class="text-[10px] font-medium text-gray-500">Monthly Revenue</p>
                                 <p class="text-base font-extrabold tabular-nums text-white">{{ mrrDisplay }}</p>
-                                <p class="text-[10px] font-semibold text-emerald-400">↑ 8.3% this month</p>
+                                <p class="text-[10px] font-semibold text-success-400">↑ 8.3% this month</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Floating plan upgrade badge — right edge -->
-                    <div class="absolute -right-3 bottom-24 hidden rounded-xl border border-violet-700/40 bg-violet-900/50 px-3 py-2 shadow-xl backdrop-blur ring-1 ring-violet-500/20 sm:block">
+                    <div class="absolute -right-3 bottom-24 hidden rounded-xl border border-accent-700/40 bg-accent-900/50 px-3 py-2 shadow-xl backdrop-blur ring-1 ring-accent-500/20 sm:block">
                         <div class="flex items-center gap-2">
-                            <BoltIcon class="size-4 text-violet-400" />
-                            <span class="text-xs font-semibold text-violet-300">Globex → Pro Plan</span>
+                            <BoltIcon class="size-4 text-accent-400" />
+                            <span class="text-xs font-semibold text-accent-300">Globex → Pro Plan</span>
                         </div>
                     </div>
                 </div>

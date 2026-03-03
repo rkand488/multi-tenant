@@ -75,12 +75,12 @@ const features = [
 ];
 
 const accentMap = {
-    indigo:  { bg: 'bg-indigo-50',  icon: 'text-indigo-600',  tag: 'bg-indigo-50 text-indigo-600',  bar: 'bg-indigo-500',  ring: 'ring-indigo-100',  hover: 'group-hover:border-indigo-200' },
-    violet:  { bg: 'bg-violet-50',  icon: 'text-violet-600',  tag: 'bg-violet-50 text-violet-600',  bar: 'bg-violet-500',  ring: 'ring-violet-100',  hover: 'group-hover:border-violet-200' },
-    sky:     { bg: 'bg-sky-50',     icon: 'text-sky-600',     tag: 'bg-sky-50 text-sky-600',        bar: 'bg-sky-500',     ring: 'ring-sky-100',     hover: 'group-hover:border-sky-200' },
-    emerald: { bg: 'bg-emerald-50', icon: 'text-emerald-600', tag: 'bg-emerald-50 text-emerald-600', bar: 'bg-emerald-500', ring: 'ring-emerald-100', hover: 'group-hover:border-emerald-200' },
-    pink:    { bg: 'bg-pink-50',    icon: 'text-pink-600',    tag: 'bg-pink-50 text-pink-600',      bar: 'bg-pink-500',    ring: 'ring-pink-100',    hover: 'group-hover:border-pink-200' },
-    amber:   { bg: 'bg-amber-50',   icon: 'text-amber-600',   tag: 'bg-amber-50 text-amber-600',    bar: 'bg-amber-500',   ring: 'ring-amber-100',   hover: 'group-hover:border-amber-200' },
+    indigo:  { bg: 'bg-primary-50',  icon: 'text-primary-600',  tag: 'bg-primary-50 text-primary-600',  bar: 'bg-primary-500',  ring: 'ring-primary-100',  hover: 'group-hover:border-primary-200' },
+    violet:  { bg: 'bg-accent-50',  icon: 'text-accent-600',  tag: 'bg-accent-50 text-accent-600',  bar: 'bg-accent-500',  ring: 'ring-accent-100',  hover: 'group-hover:border-accent-200' },
+    sky:     { bg: 'bg-secondary-50',     icon: 'text-secondary-600',     tag: 'bg-secondary-50 text-secondary-600',        bar: 'bg-secondary-500',     ring: 'ring-secondary-100',     hover: 'group-hover:border-secondary-200' },
+    emerald: { bg: 'bg-success-50', icon: 'text-success-600', tag: 'bg-success-50 text-success-600', bar: 'bg-success-500', ring: 'ring-success-100', hover: 'group-hover:border-success-200' },
+    pink:    { bg: 'bg-accent-50',    icon: 'text-accent-600',    tag: 'bg-accent-50 text-accent-600',      bar: 'bg-accent-500',    ring: 'ring-accent-100',    hover: 'group-hover:border-accent-200' },
+    amber:   { bg: 'bg-warning-50',   icon: 'text-warning-600',   tag: 'bg-warning-50 text-warning-600',    bar: 'bg-warning-500',   ring: 'ring-warning-100',   hover: 'group-hover:border-warning-200' },
 };
 
 // ── Scroll-triggered animation ─────────────────────────────────────────────────
@@ -110,22 +110,19 @@ onMounted(() => {
         <!-- Subtle background pattern -->
         <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
             <div class="absolute inset-y-0 right-0 w-1/2 bg-gray-50/60" />
-            <div
-                class="absolute inset-0 opacity-[0.025]"
-                style="background-image: radial-gradient(circle, #6366f1 1px, transparent 1px); background-size: 32px 32px;"
-            />
+            <div class="absolute inset-0 opacity-[0.025] bg-hexagon-pattern" />
         </div>
 
         <div class="mx-auto max-w-7xl px-6">
 
             <!-- ── Section heading ──────────────────────────────────────────── -->
             <div class="mx-auto mb-20 max-w-2xl text-center" data-feat-animate>
-                <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-600">
+                <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-primary-600">
                     Platform Capabilities
                 </p>
                 <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
                     Everything you need to run a
-                    <span class="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+                    <span class="text-gradient-primary">
                         multi-tenant SaaS
                     </span>
                 </h2>
@@ -222,7 +219,7 @@ onMounted(() => {
                     </a>
                     <a
                         href="#pricing"
-                        class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
+                        class="rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700"
                         @click.prevent="document.querySelector('#pricing')?.scrollIntoView({ behavior: 'smooth' })"
                     >
                         View Pricing

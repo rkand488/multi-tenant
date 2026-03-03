@@ -60,49 +60,49 @@ const screens = [
 
 const accentMap = {
     indigo: {
-        badge: 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200',
-        bar: 'bg-indigo-500',
-        glow: 'from-indigo-500/10 via-transparent',
-        dot: 'bg-indigo-500',
-        ring: 'group-hover:ring-indigo-300',
-        stat: 'text-indigo-400',
-        pill: 'bg-indigo-900/50 text-indigo-300',
+        badge: 'bg-primary-50 text-primary-700 ring-1 ring-primary-200',
+        bar: 'bg-primary-500',
+        glow: 'from-primary-500/10 via-transparent',
+        dot: 'bg-primary-500',
+        ring: 'group-hover:ring-primary-300',
+        stat: 'text-primary-400',
+        pill: 'bg-primary-900/50 text-primary-300',
     },
     violet: {
-        badge: 'bg-violet-50 text-violet-700 ring-1 ring-violet-200',
-        bar: 'bg-violet-500',
-        glow: 'from-violet-500/10 via-transparent',
-        dot: 'bg-violet-500',
-        ring: 'group-hover:ring-violet-300',
-        stat: 'text-violet-400',
-        pill: 'bg-violet-900/50 text-violet-300',
+        badge: 'bg-accent-50 text-accent-700 ring-1 ring-accent-200',
+        bar: 'bg-accent-500',
+        glow: 'from-accent-500/10 via-transparent',
+        dot: 'bg-accent-500',
+        ring: 'group-hover:ring-accent-300',
+        stat: 'text-accent-400',
+        pill: 'bg-accent-900/50 text-accent-300',
     },
     sky: {
-        badge: 'bg-sky-50 text-sky-700 ring-1 ring-sky-200',
-        bar: 'bg-sky-500',
-        glow: 'from-sky-500/10 via-transparent',
-        dot: 'bg-sky-500',
-        ring: 'group-hover:ring-sky-300',
-        stat: 'text-sky-400',
-        pill: 'bg-sky-900/50 text-sky-300',
+        badge: 'bg-secondary-50 text-secondary-700 ring-1 ring-secondary-200',
+        bar: 'bg-secondary-500',
+        glow: 'from-secondary-500/10 via-transparent',
+        dot: 'bg-secondary-500',
+        ring: 'group-hover:ring-secondary-300',
+        stat: 'text-secondary-400',
+        pill: 'bg-secondary-900/50 text-secondary-300',
     },
     emerald: {
-        badge: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
-        bar: 'bg-emerald-500',
-        glow: 'from-emerald-500/10 via-transparent',
-        dot: 'bg-emerald-500',
-        ring: 'group-hover:ring-emerald-300',
-        stat: 'text-emerald-400',
-        pill: 'bg-emerald-900/50 text-emerald-300',
+        badge: 'bg-success-50 text-success-700 ring-1 ring-success-200',
+        bar: 'bg-success-500',
+        glow: 'from-success-500/10 via-transparent',
+        dot: 'bg-success-500',
+        ring: 'group-hover:ring-success-300',
+        stat: 'text-success-400',
+        pill: 'bg-success-900/50 text-success-300',
     },
     amber: {
-        badge: 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
-        bar: 'bg-amber-500',
-        glow: 'from-amber-500/10 via-transparent',
-        dot: 'bg-amber-500',
-        ring: 'group-hover:ring-amber-300',
-        stat: 'text-amber-400',
-        pill: 'bg-amber-900/50 text-amber-300',
+        badge: 'bg-warning-50 text-warning-700 ring-1 ring-warning-200',
+        bar: 'bg-warning-500',
+        glow: 'from-warning-500/10 via-transparent',
+        dot: 'bg-warning-500',
+        ring: 'group-hover:ring-warning-300',
+        stat: 'text-warning-400',
+        pill: 'bg-warning-900/50 text-warning-300',
     },
 };
 
@@ -131,7 +131,7 @@ onMounted(() => {
 
             <!-- Heading -->
             <div class="mx-auto mb-16 max-w-2xl text-center" data-screen-animate>
-                <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-400">Product Preview</p>
+                <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-primary-400">Product Preview</p>
                 <h2 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
                     Every screen designed for clarity
                 </h2>
@@ -150,8 +150,8 @@ onMounted(() => {
                 <!-- Browser chrome -->
                 <div class="flex h-9 items-center gap-2 border-b border-gray-700 bg-gray-800/90 px-4">
                     <span class="size-2.5 rounded-full bg-red-500/60" />
-                    <span class="size-2.5 rounded-full bg-amber-500/60" />
-                    <span class="size-2.5 rounded-full bg-emerald-500/60" />
+                    <span class="size-2.5 rounded-full bg-warning-500/60" />
+                    <span class="size-2.5 rounded-full bg-success-500/60" />
                     <div class="mx-3 flex-1 rounded bg-gray-900 px-3 py-1 text-xs text-gray-500">
                         {{ screens[0].url }}
                     </div>
@@ -172,7 +172,7 @@ onMounted(() => {
                                 <p class="text-xs text-gray-500">Platform Overview</p>
                                 <h3 class="text-sm font-bold text-white">Admin Dashboard</h3>
                             </div>
-                            <span class="rounded-full bg-indigo-900/60 px-3 py-1 text-xs text-indigo-300">Last 30 days</span>
+                            <span class="rounded-full bg-primary-900/60 px-3 py-1 text-xs text-primary-300">Last 30 days</span>
                         </div>
 
                         <!-- KPI row -->
@@ -189,7 +189,7 @@ onMounted(() => {
                             >
                                 <p class="text-xs text-gray-500">{{ stat.label }}</p>
                                 <p class="mt-1 text-base font-bold text-white">{{ stat.value }}</p>
-                                <p class="mt-0.5 text-xs text-emerald-400">{{ stat.change }}</p>
+                                <p class="mt-0.5 text-xs text-success-400">{{ stat.change }}</p>
                             </div>
                         </div>
 
@@ -203,7 +203,7 @@ onMounted(() => {
                                         v-for="(h, idx) in [28, 35, 30, 48, 42, 56, 50, 68, 62, 80, 75, 100]"
                                         :key="idx"
                                         class="flex-1 rounded-t transition-all duration-300 group-hover:opacity-100"
-                                        :class="idx >= 10 ? 'bg-indigo-500' : 'bg-gray-700'"
+                                        :class="idx >= 10 ? 'bg-primary-500' : 'bg-gray-700'"
                                         :style="{ height: h + '%' }"
                                     />
                                 </div>
@@ -249,8 +249,8 @@ onMounted(() => {
                     <!-- Browser chrome -->
                     <div class="flex h-9 items-center gap-2 border-b border-gray-700 bg-gray-800/90 px-4">
                         <span class="size-2.5 rounded-full bg-red-500/60" />
-                        <span class="size-2.5 rounded-full bg-amber-500/60" />
-                        <span class="size-2.5 rounded-full bg-emerald-500/60" />
+                        <span class="size-2.5 rounded-full bg-warning-500/60" />
+                        <span class="size-2.5 rounded-full bg-success-500/60" />
                         <div class="mx-3 flex-1 truncate rounded bg-gray-900 px-3 py-1 text-xs text-gray-500">
                             {{ screen.url }}
                         </div>
@@ -296,7 +296,7 @@ onMounted(() => {
                         <div v-else-if="screen.id === 'users'" class="relative px-5 py-4">
                             <div class="mb-4 flex items-center justify-between">
                                 <h3 class="text-sm font-bold text-white">Team Members</h3>
-                                <span class="rounded-full bg-sky-900/60 px-2.5 py-0.5 text-xs text-sky-300">12 members</span>
+                                <span class="rounded-full bg-secondary-900/60 px-2.5 py-0.5 text-xs text-secondary-300">12 members</span>
                             </div>
                             <!-- Search bar mock -->
                             <div class="mb-4 flex items-center gap-2 rounded-lg bg-gray-800/80 px-3 py-2">
@@ -316,7 +316,7 @@ onMounted(() => {
                                     class="flex items-center justify-between px-4 py-2.5"
                                 >
                                     <div class="flex items-center gap-2.5">
-                                        <div class="flex size-7 shrink-0 items-center justify-center rounded-full bg-sky-700 text-xs font-bold text-white">
+                                        <div class="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary-700 text-xs font-bold text-white">
                                             {{ user.name[0] }}
                                         </div>
                                         <span class="text-xs font-medium text-gray-200">{{ user.name }}</span>
@@ -325,7 +325,7 @@ onMounted(() => {
                                         <span class="text-xs text-gray-500">{{ user.role }}</span>
                                         <span
                                             class="rounded-full px-2 py-0.5 text-xs"
-                                            :class="user.status === 'active' ? 'bg-emerald-900/60 text-emerald-300' : 'bg-amber-900/40 text-amber-400'"
+                                            :class="user.status === 'active' ? 'bg-success-900/60 text-success-300' : 'bg-warning-900/40 text-warning-400'"
                                         >{{ user.status }}</span>
                                     </div>
                                 </div>
@@ -336,12 +336,12 @@ onMounted(() => {
                         <div v-else-if="screen.id === 'billing'" class="relative px-5 py-4">
                             <h3 class="mb-4 text-sm font-bold text-white">Billing Overview</h3>
                             <!-- Current plan -->
-                            <div class="mb-3 flex items-center justify-between rounded-xl bg-emerald-900/30 px-4 py-3 ring-1 ring-emerald-700/40">
+                            <div class="mb-3 flex items-center justify-between rounded-xl bg-success-900/30 px-4 py-3 ring-1 ring-success-700/40">
                                 <div>
                                     <p class="text-xs text-gray-400">Current Plan</p>
                                     <p class="mt-0.5 font-semibold text-white">Pro — $49<span class="text-xs font-normal text-gray-400">/mo</span></p>
                                 </div>
-                                <span class="rounded-full bg-emerald-600 px-3 py-0.5 text-xs text-white">Active</span>
+                                <span class="rounded-full bg-success-600 px-3 py-0.5 text-xs text-white">Active</span>
                             </div>
                             <!-- Usage bar -->
                             <div class="mb-3 rounded-xl bg-gray-800/80 px-4 py-3">
@@ -350,7 +350,7 @@ onMounted(() => {
                                     <span class="text-gray-200">84,120 / 100,000</span>
                                 </div>
                                 <div class="h-2 overflow-hidden rounded-full bg-gray-700">
-                                    <div class="h-full rounded-full bg-emerald-500" style="width: 84%" />
+                                    <div class="h-full rounded-full bg-success-500" style="width: 84%" />
                                 </div>
                             </div>
                             <!-- Recent invoices -->
@@ -367,7 +367,7 @@ onMounted(() => {
                                 >
                                     <span class="text-gray-400">{{ inv.date }}</span>
                                     <span class="text-gray-200">{{ inv.amount }}</span>
-                                    <span class="text-emerald-400">{{ inv.status }}</span>
+                                    <span class="text-success-400">{{ inv.status }}</span>
                                 </div>
                             </div>
                         </div>
@@ -376,7 +376,7 @@ onMounted(() => {
                         <div v-else-if="screen.id === 'analytics'" class="relative px-5 py-4">
                             <div class="mb-4 flex items-center justify-between">
                                 <h3 class="text-sm font-bold text-white">Analytics Overview</h3>
-                                <span class="rounded-full bg-amber-900/60 px-2.5 py-0.5 text-xs text-amber-300">Last 30 days</span>
+                                <span class="rounded-full bg-warning-900/60 px-2.5 py-0.5 text-xs text-warning-300">Last 30 days</span>
                             </div>
                             <!-- Mini stat row -->
                             <div class="mb-4 grid grid-cols-3 gap-2">
@@ -409,7 +409,7 @@ onMounted(() => {
                                                 <span class="text-gray-300">{{ src.pct }}%</span>
                                             </div>
                                             <div class="h-1.5 overflow-hidden rounded-full bg-gray-700">
-                                                <div class="h-full rounded-full bg-amber-500" :style="{ width: src.pct + '%' }" />
+                                                <div class="h-full rounded-full bg-warning-500" :style="{ width: src.pct + '%' }" />
                                             </div>
                                         </div>
                                     </div>
@@ -422,7 +422,7 @@ onMounted(() => {
                                             v-for="(h, idx) in [40, 62, 48, 80, 70, 90, 100]"
                                             :key="idx"
                                             class="flex-1 rounded-t"
-                                            :class="idx === 6 ? 'bg-amber-500' : 'bg-gray-600'"
+                                            :class="idx === 6 ? 'bg-warning-500' : 'bg-gray-600'"
                                             :style="{ height: h + '%' }"
                                         />
                                     </div>

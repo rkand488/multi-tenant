@@ -11,8 +11,8 @@ const testimonials = [
         role: 'CTO',
         company: 'Flowbase',
         initials: 'SC',
-        avatarColor: 'from-indigo-500 to-violet-600',
-        companyColor: 'text-indigo-600',
+        avatarColor: 'from-primary-500 to-accent-600',
+        companyColor: 'text-primary-600',
         featured: true,
     },
     {
@@ -21,8 +21,8 @@ const testimonials = [
         role: 'Founder',
         company: 'Stackly',
         initials: 'MW',
-        avatarColor: 'from-violet-500 to-fuchsia-600',
-        companyColor: 'text-violet-600',
+        avatarColor: 'from-accent-500 to-fuchsia-600',
+        companyColor: 'text-accent-600',
         featured: false,
     },
     {
@@ -31,8 +31,8 @@ const testimonials = [
         role: 'Lead Engineer',
         company: 'Crisp Analytics',
         initials: 'PN',
-        avatarColor: 'from-emerald-500 to-teal-600',
-        companyColor: 'text-emerald-600',
+        avatarColor: 'from-success-500 to-secondary-600',
+        companyColor: 'text-success-600',
         featured: false,
     },
     {
@@ -41,8 +41,8 @@ const testimonials = [
         role: 'Product Lead',
         company: 'Devhub',
         initials: 'JO',
-        avatarColor: 'from-amber-500 to-orange-600',
-        companyColor: 'text-amber-600',
+        avatarColor: 'from-warning-500 to-orange-600',
+        companyColor: 'text-warning-600',
         featured: false,
     },
 ];
@@ -69,14 +69,14 @@ onMounted(() => {
     <section class="relative overflow-hidden bg-gray-50 py-24 sm:py-32">
 
         <!-- Decorative blobs -->
-        <div class="pointer-events-none absolute -left-32 -top-32 size-96 rounded-full bg-indigo-100/70 blur-3xl" />
-        <div class="pointer-events-none absolute -bottom-32 -right-32 size-96 rounded-full bg-violet-100/50 blur-3xl" />
+        <div class="pointer-events-none absolute -left-32 -top-32 size-96 rounded-full bg-primary-100/70 blur-3xl" />
+        <div class="pointer-events-none absolute -bottom-32 -right-32 size-96 rounded-full bg-accent-100/50 blur-3xl" />
 
         <div class="relative mx-auto max-w-7xl px-6">
 
             <!-- Heading ──────────────────────────────────────────────────── -->
             <div class="mx-auto mb-16 max-w-xl text-center" data-testi-animate>
-                <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-600">Testimonials</p>
+                <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-primary-600">Testimonials</p>
                 <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
                     Loved by builders worldwide
                 </h2>
@@ -96,14 +96,14 @@ onMounted(() => {
                 <div
                     data-testi-animate
                     style="transition-delay: 80ms"
-                    class="testi-card relative flex flex-col rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 p-8 shadow-xl shadow-indigo-900/30 ring-1 ring-indigo-500 lg:col-span-2"
+                    class="testi-card relative flex flex-col rounded-2xl bg-gradient-primary p-8 shadow-xl shadow-primary-900/30 ring-1 ring-primary-500 lg:col-span-2"
                 >
                     <!-- Decorative large quote marks -->
-                    <span class="absolute right-6 top-4 select-none text-8xl font-black leading-none text-indigo-500/30">"</span>
+                    <span class="absolute right-6 top-4 select-none text-8xl font-black leading-none text-primary-500/30">"</span>
 
                     <!-- Stars -->
                     <div class="mb-5 flex gap-1">
-                        <StarIcon v-for="n in 5" :key="n" class="size-4 text-amber-300" />
+                        <StarIcon v-for="n in 5" :key="n" class="size-4 text-warning-300" />
                     </div>
 
                     <!-- Quote -->
@@ -121,9 +121,9 @@ onMounted(() => {
                         </div>
                         <div>
                             <p class="font-semibold text-white">{{ testimonials[0].name }}</p>
-                            <p class="text-sm text-indigo-200">
+                            <p class="text-sm text-primary-200">
                                 {{ testimonials[0].role }} ·
-                                <span class="font-medium text-indigo-100">{{ testimonials[0].company }}</span>
+                                <span class="font-medium text-primary-100">{{ testimonials[0].company }}</span>
                             </p>
                         </div>
                     </div>
@@ -140,7 +140,7 @@ onMounted(() => {
                     >
                         <!-- Stars -->
                         <div class="mb-4 flex gap-0.5">
-                            <StarIcon v-for="n in 5" :key="n" class="size-3.5 text-amber-400" />
+                            <StarIcon v-for="n in 5" :key="n" class="size-3.5 text-warning-400" />
                         </div>
 
                         <!-- Quote -->
@@ -172,12 +172,12 @@ onMounted(() => {
                     class="testi-card flex flex-col rounded-2xl border border-gray-100 bg-white p-7 shadow-sm sm:flex-row sm:items-center sm:gap-8 lg:col-span-3"
                 >
                     <!-- Large quote accent -->
-                    <p class="mb-4 text-6xl font-black leading-none text-indigo-100 sm:mb-0 sm:shrink-0">"</p>
+                    <p class="mb-4 text-6xl font-black leading-none text-primary-100 sm:mb-0 sm:shrink-0">"</p>
 
                     <div class="flex flex-1 flex-col">
                         <!-- Stars -->
                         <div class="mb-3 flex gap-0.5">
-                            <StarIcon v-for="n in 5" :key="n" class="size-3.5 text-amber-400" />
+                            <StarIcon v-for="n in 5" :key="n" class="size-3.5 text-warning-400" />
                         </div>
                         <p class="flex-1 text-sm leading-relaxed text-gray-700">"{{ testimonials[3].quote }}"</p>
                     </div>
