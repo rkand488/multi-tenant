@@ -69,9 +69,11 @@ const isActive = (href) => {
             class="flex h-16 shrink-0 items-center border-b border-gray-100 dark:border-gray-800"
             :class="collapsed ? 'justify-center px-0' : 'gap-3 px-5'"
         >
-            <!-- Tenant avatar / logo -->
-            <div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-sm font-bold text-white shadow-sm">
-                {{ tenant?.name?.[0]?.toUpperCase() ?? 'T' }}
+            <!-- Logo -->
+            <div
+                class="flex size-8 shrink-0 items-center justify-center"
+            >
+                <img src="/logo.png" alt="Tenantrix" class="size-8 object-contain" />
             </div>
 
             <!-- Tenant name + plan badge (hidden when collapsed) -->
@@ -81,7 +83,7 @@ const isActive = (href) => {
                 </p>
                 <span
                     v-if="tenant?.plan_name"
-                    class="inline-block rounded-full bg-indigo-50 px-1.5 py-0.5 text-[10px] font-medium text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
+                    class="inline-block rounded-full bg-primary-50 px-1.5 py-0.5 text-[10px] font-medium text-primary-600 dark:bg-primary-900/30 dark:text-primary-400"
                 >
                     {{ tenant.plan_name }}
                 </span>
@@ -109,7 +111,7 @@ const isActive = (href) => {
                 :class="[
                     collapsed ? 'mb-1 justify-center px-0 py-2.5' : 'mb-0.5 gap-3 px-3 py-2',
                     isActive(item.href)
-                        ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300'
+                        ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300'
                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white',
                 ]"
                 @click="closeMobile"
@@ -117,14 +119,14 @@ const isActive = (href) => {
                 <!-- Active indicator bar -->
                 <span
                     v-if="isActive(item.href)"
-                    class="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-indigo-500"
+                    class="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-primary-500"
                     aria-hidden="true"
                 />
 
                 <component
                     :is="item.icon"
                     class="size-5 shrink-0"
-                    :class="isActive(item.href) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300'"
+                    :class="isActive(item.href) ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300'"
                 />
 
                 <!-- Label (hidden when collapsed on desktop) -->
@@ -133,7 +135,7 @@ const isActive = (href) => {
                 <!-- Badge (e.g. unread count) -->
                 <span
                     v-if="!collapsed && item.badge"
-                    class="ml-auto inline-flex min-w-[1.25rem] items-center justify-center rounded-full bg-indigo-100 px-1.5 py-0.5 text-xs font-semibold text-indigo-700 dark:bg-indigo-800 dark:text-indigo-200"
+                    class="ml-auto inline-flex min-w-[1.25rem] items-center justify-center rounded-full bg-primary-100 px-1.5 py-0.5 text-xs font-semibold text-primary-700 dark:bg-primary-800 dark:text-primary-200"
                 >
                     {{ item.badge }}
                 </span>

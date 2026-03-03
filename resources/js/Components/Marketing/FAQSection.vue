@@ -83,7 +83,7 @@ onMounted(() => {
 
 <template>
     <section id="faq" class="bg-gray-50 py-24 sm:py-32">
-        <div class="mx-auto max-w-3xl px-6">
+        <div class="mx-auto max-w-4xl px-6">
 
             <!-- Heading -->
             <div class="mb-12 text-center" data-faq-animate>

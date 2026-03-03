@@ -29,8 +29,8 @@ const submit = () => {
 
         <!-- Heading -->
         <div class="text-center">
-            <h1 class="text-3xl font-bold text-gray-900">Welcome back</h1>
-            <p class="mt-2 text-sm text-gray-600">Sign in to continue to your workspace</p>
+            <h1 class="text-3xl font-bold text-gradient-primary">Welcome back</h1>
+            <p class="mt-2 text-sm text-gray-500">Sign in to continue to your workspace</p>
         </div>
 
         <!-- Status message (e.g. after password reset) -->
@@ -46,7 +46,7 @@ const submit = () => {
 
             <!-- Email -->
             <div class="space-y-2">
-                <label for="email" class="block text-sm font-medium text-gray-700">
+                <label for="email" class="block text-sm font-medium text-primary-800">
                     Email address
                 </label>
                 <input
@@ -70,7 +70,7 @@ const submit = () => {
 
             <!-- Password -->
             <div class="space-y-2">
-                <label for="password" class="block text-sm font-medium text-gray-700">
+                <label for="password" class="block text-sm font-medium text-primary-800">
                     Password
                 </label>
                 <input
@@ -105,7 +105,7 @@ const submit = () => {
 
                 <Link
                     :href="route('password.request')"
-                    class="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors"
+                    class="text-sm font-medium text-accent-600 underline-offset-2 hover:text-accent-700 hover:underline transition-colors"
                 >
                     Forgot password?
                 </Link>
@@ -115,8 +115,8 @@ const submit = () => {
             <button
                 type="submit"
                 :disabled="form.processing"
-                class="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-3 text-sm
-                       font-semibold text-white shadow-lg shadow-primary-500/50 transition-all hover:shadow-xl hover:shadow-primary-500/60 hover:from-primary-700 hover:to-primary-800
+                class="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-primary px-4 py-3 text-sm
+                       font-semibold text-white shadow-lg shadow-primary-800/40 transition-all hover:opacity-90 hover:shadow-xl hover:shadow-primary-800/50
                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2
                        disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
             >
@@ -136,11 +136,11 @@ const submit = () => {
         </form>
 
         <!-- Register link -->
-        <p class="text-center text-sm text-gray-600">
+        <p class="text-center text-sm text-gray-500">
             Don't have an account?
             <Link
                 :href="route('register')"
-                class="font-semibold text-primary-600 hover:text-primary-700 transition-colors"
+                class="font-semibold text-primary-600 underline-offset-2 hover:text-accent-600 hover:underline transition-colors"
             >
                 Sign up free
             </Link>
