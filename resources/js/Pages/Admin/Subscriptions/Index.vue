@@ -39,9 +39,12 @@ const handlePageChange = (page) => {
     router.get(route('admin.subscriptions.index'), { ...props.filters, page }, { preserveState: true });
 };
 
-const cancelSubscription = (id) => {
-    if (confirm('Cancel this subscription? The tenant will be downgraded at the end of their billing period.')) {
-        router.patch(route('admin.subscriptions.cancel', id));
+const cancelSubscription = (id, tenantName) => {
+    if (confirm(`Cancel the subscription for "${tenantName}"?\n\nThe tenant will retain access until the end of their current billing period.`)) {
+        router.patch(route('admin.subscriptions.cancel', id), {}, {
+            preserveScroll: true,
+            onSuccess: () => {},
+        });
     }
 };
 
@@ -57,10 +60,11 @@ const columns = [
 ];
 
 const statusClass = (s) => ({
-    active:   'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
-    trialing: 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-    canceled: 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400',
-    past_due: 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+    active:    'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+    trialing:  'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+    cancelled: 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400',
+    suspended: 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400',
+    past_due:  'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400',
 }[s] ?? 'bg-gray-100 text-gray-500');
 </script>
 
@@ -107,7 +111,7 @@ const statusClass = (s) => ({
                     <option value="active">Active</option>
                     <option value="trialing">Trialing</option>
                     <option value="past_due">Past Due</option>
-                    <option value="canceled">Canceled</option>
+                    <option value="cancelled">Cancelled</option>
                 </select>
             </div>
         </div>
@@ -173,7 +177,7 @@ const statusClass = (s) => ({
                                 <DropdownItem
                                     v-if="row.status === 'active' || row.status === 'trialing'"
                                     variant="danger"
-                                    @click="cancelSubscription(row.id)"
+                                    @click="cancelSubscription(row.id, row.tenant_name)"
                                 >
                                     Cancel subscription
                                 </DropdownItem>

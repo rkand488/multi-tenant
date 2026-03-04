@@ -87,6 +87,7 @@ Route::middleware(['auth', 'super_admin'])->prefix('admin')->name('admin.')->gro
     // Tenants
     Route::get('tenants', [AdminTenantController::class, 'index'])->name('tenants.index');
     Route::get('tenants/create', [AdminTenantController::class, 'create'])->name('tenants.create');
+    Route::post('tenants', [AdminTenantController::class, 'store'])->name('tenants.store');
     Route::get('tenants/{id}', [AdminTenantController::class, 'show'])->name('tenants.show');
     Route::get('tenants/{id}/edit', [AdminTenantController::class, 'edit'])->name('tenants.edit');
     Route::put('tenants/{id}', [AdminTenantController::class, 'update'])->name('tenants.update');
