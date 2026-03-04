@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Tenancy\Concerns\ScopedByTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Role extends Model
 {
+    use ScopedByTenant;
+
     protected $connection = 'central';
 
     protected $fillable = [

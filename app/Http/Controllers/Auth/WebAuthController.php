@@ -93,7 +93,13 @@ class WebAuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('tenant.dashboard');
+        // Redirect the owner to their workspace subdomain dashboard.
+        // Note: SESSION_DOMAIN must be set to ".{APP_DOMAIN}" in .env so that
+        // the session cookie is shared across subdomains (e.g. .tenantrix.test).
+        $tenant = $result['tenant'];
+        $dashboardUrl = 'https://'.$tenant->slug.'.'.config('tenancy.domain').'/dashboard';
+
+        return redirect()->away($dashboardUrl);
     }
 
     /**

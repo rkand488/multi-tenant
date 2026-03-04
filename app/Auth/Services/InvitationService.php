@@ -3,9 +3,12 @@
 namespace App\Auth\Services;
 
 use App\Central\Enums\UserRole;
+use App\Central\Models\Tenant;
 use App\Models\Invitation;
 use App\Models\User;
+use App\Notifications\TenantInvitationNotification;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -48,7 +51,7 @@ class InvitationService
             ]);
         }
 
-        return Invitation::create([
+        $invitation = Invitation::create([
             'tenant_id' => $tenantId,
             'email' => $data['email'],
             'role' => $role,
@@ -56,6 +59,15 @@ class InvitationService
             'invited_by' => $inviter->id,
             'expires_at' => now()->addDays(7),
         ]);
+
+        // Resolve the workspace name for the notification subject line.
+        $workspaceName = Tenant::on('central')->find($tenantId)?->name ?? 'your workspace';
+
+        // Send the invitation email to the invitee.
+        Notification::route('mail', $invitation->email)
+            ->notify(new TenantInvitationNotification($invitation, $workspaceName));
+
+        return $invitation;
     }
 
     /**
@@ -93,6 +105,9 @@ class InvitationService
             'password' => Hash::make($data['password']),
             'role' => $invitation->role,
             'tenant_id' => $invitation->tenant_id,
+            // The invited user clicked through the invitation link, so their
+            // email address is already verified — mark it as such immediately.
+            'email_verified_at' => now(),
         ]);
 
         $invitation->update(['accepted_at' => now()]);

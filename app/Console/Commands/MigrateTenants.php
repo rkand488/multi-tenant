@@ -77,7 +77,10 @@ class MigrateTenants extends Command
                 $this->ensureDatabaseExists($dbName);
                 $this->databaseManager->connectTenant($tenant);
 
-                Artisan::call($command, array_merge($options, ['--database' => 'tenant']), $this->output);
+                Artisan::call($command, array_merge($options, [
+                    '--database' => config('tenancy.tenant_connection', 'tenant'),
+                    '--path' => 'database/migrations/tenant',
+                ]), $this->output);
 
                 $passed++;
             } catch (Throwable $e) {

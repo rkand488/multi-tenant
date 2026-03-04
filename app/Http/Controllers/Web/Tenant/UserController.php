@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Web\Tenant;
 
+use App\Auth\Services\InvitationService;
 use App\Central\Models\Tenant;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Tenant\StoreUserInviteRequest;
+use App\Models\Invitation;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -13,6 +16,10 @@ use Inertia\Response;
 
 class UserController extends Controller
 {
+    public function __construct(
+        private readonly InvitationService $invitationService,
+    ) {}
+
     public function index(): Response
     {
         /** @var User $user */
@@ -70,9 +77,19 @@ class UserController extends Controller
         ]);
     }
 
-    public function store(): RedirectResponse
+    public function store(StoreUserInviteRequest $request): RedirectResponse
     {
-        return back();
+        /** @var User $authUser */
+        $authUser = $request->user();
+
+        $invitation = $this->invitationService->invite(
+            tenantId: $authUser->tenant_id,
+            inviter: $authUser,
+            data: $request->validated(),
+        );
+
+        return redirect()->route('tenant.users.index')
+            ->with('success', "Invitation sent to {$invitation->email}.");
     }
 
     public function update(Request $request, string $user): RedirectResponse
@@ -106,11 +123,61 @@ class UserController extends Controller
 
     public function destroy(string $user): RedirectResponse
     {
-        return back();
+        /** @var User $authUser */
+        $authUser = auth()->user();
+
+        $tenantUser = User::on('central')
+            ->where('tenant_id', $authUser->tenant_id)
+            ->where('id', $user)
+            ->firstOrFail();
+
+        if ($tenantUser->id === $authUser->id) {
+            return back()->withErrors(['user' => 'You cannot remove yourself.']);
+        }
+
+        if ($tenantUser->isTenantOwner()) {
+            return back()->withErrors(['user' => 'Cannot remove the workspace owner.']);
+        }
+
+        $tenantUser->delete();
+
+        return redirect()->route('tenant.users.index')
+            ->with('success', "{$tenantUser->name} has been removed from the workspace.");
     }
 
     public function resendInvite(string $user): RedirectResponse
     {
-        return back();
+        /** @var User $authUser */
+        $authUser = auth()->user();
+
+        $tenantUser = User::on('central')
+            ->where('tenant_id', $authUser->tenant_id)
+            ->where('id', $user)
+            ->firstOrFail();
+
+        // Find the most recent pending invitation for this user's email address.
+        $invitation = Invitation::withoutGlobalScope(\App\Tenancy\Scopes\TenantScope::class)
+            ->where('tenant_id', $authUser->tenant_id)
+            ->where('email', $tenantUser->email)
+            ->whereNull('accepted_at')
+            ->where('expires_at', '>', now())
+            ->latest()
+            ->first();
+
+        if (! $invitation) {
+            return back()->withErrors(['user' => 'No pending invitation found for this user.']);
+        }
+
+        // Extend expiry and resend.
+        $invitation->update(['expires_at' => now()->addDays(7)]);
+
+        $invitation->refresh();
+
+        $workspaceName = \App\Central\Models\Tenant::on('central')->find($authUser->tenant_id)?->name ?? 'your workspace';
+
+        \Illuminate\Support\Facades\Notification::route('mail', $invitation->email)
+            ->notify(new \App\Notifications\TenantInvitationNotification($invitation, $workspaceName));
+
+        return back()->with('success', 'Invitation resent successfully.');
     }
 }

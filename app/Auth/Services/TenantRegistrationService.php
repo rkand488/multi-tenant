@@ -4,6 +4,7 @@ namespace App\Auth\Services;
 
 use App\Central\Enums\TenantStatus;
 use App\Central\Enums\UserRole;
+use App\Central\Jobs\ProvisionTenantDatabase;
 use App\Central\Models\Domain;
 use App\Central\Models\Tenant;
 use App\Models\User;
@@ -63,9 +64,10 @@ class TenantRegistrationService
                 'tenant_id' => $tenant->id,
             ]);
 
-            // Transition tenant to Active immediately (provisioning logic can
-            // be extended here to queue DB creation, etc.).
-            $tenant->update(['status' => TenantStatus::Active]);
+            // Dispatch the provisioning job which will set the tenant Active
+            // and send the owner a welcome email once setup is complete.
+            // With a sync queue driver (local/testing) this runs inline.
+            ProvisionTenantDatabase::dispatch($tenant, $owner->email);
 
             return ['tenant' => $tenant, 'user' => $owner];
         });

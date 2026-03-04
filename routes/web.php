@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\WebAuthController;
 use App\Http\Controllers\Web\Admin\AnalyticsController as AdminAnalyticsController;
 use App\Http\Controllers\Web\Admin\DashboardController as AdminDashboardController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Web\Admin\SubscriptionController as AdminSubscriptionCo
 use App\Http\Controllers\Web\Admin\TenantController as AdminTenantController;
 use App\Http\Controllers\Web\DemoController;
 use App\Http\Controllers\Web\HomeController;
+use App\Http\Controllers\Web\Invitation\AcceptInvitationController;
 use App\Http\Controllers\Web\Tenant\ActivityLogController;
 use App\Http\Controllers\Web\Tenant\BillingController;
 use App\Http\Controllers\Web\Tenant\DashboardController;
@@ -29,7 +31,7 @@ Route::prefix('demo')->name('demo.')->group(function () {
     Route::get('/billing', [DemoController::class, 'billing'])->name('billing');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'tenant_or_super_admin'])->name('tenant.dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'tenant.optional', 'tenant_or_super_admin'])->name('tenant.dashboard');
 
 Route::middleware(['guest', 'tenant.optional'])->group(function () {
     Route::get('/login', [WebAuthController::class, 'showLogin'])->name('login');
@@ -38,13 +40,20 @@ Route::middleware(['guest', 'tenant.optional'])->group(function () {
     Route::get('/register', [WebAuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [WebAuthController::class, 'register']);
 
-    Route::get('/forgot-password', [HomeController::class, 'forgotPassword'])->name('password.request');
+    Route::get('/forgot-password', [PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.email');
+    Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
 });
+
+// Invitation accept (web) — accessible without authentication
+Route::get('/invitations/{token}/accept', [AcceptInvitationController::class, 'show'])->name('invitations.accept.show');
+Route::post('/invitations/{token}/accept', [AcceptInvitationController::class, 'accept'])->name('invitations.accept');
 
 Route::post('/logout', [WebAuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 // Tenant routes
-Route::middleware(['auth', 'tenant_or_super_admin'])->prefix('dashboard')->name('tenant.')->group(function () {
+Route::middleware(['auth', 'tenant.optional', 'tenant_or_super_admin'])->prefix('dashboard')->name('tenant.')->group(function () {
     // Users / team members
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('users/create', [UserController::class, 'create'])->name('users.create');

@@ -140,7 +140,7 @@ it('allows owner to revoke their own invitation', function (): void {
     expect(Invitation::find($invitation->id))->toBeNull();
 });
 
-it('forbids revoking another tenant\'s invitation', function (): void {
+it('returns 404 for another tenant\'s invitation (TenantScope hides it)', function (): void {
     $owner = User::factory()->create(['role' => UserRole::TenantOwner, 'tenant_id' => 'tenant-a']);
     $otherInvite = Invitation::factory()->create(['tenant_id' => 'tenant-b']);
 
@@ -151,5 +151,5 @@ it('forbids revoking another tenant\'s invitation', function (): void {
     $this->actingAs($owner, 'sanctum')
         ->withoutMiddleware([\App\Http\Middleware\IdentifyTenant::class, \App\Http\Middleware\EnsureTenantIsActive::class])
         ->deleteJson("/api/v1/invitations/{$otherInvite->id}")
-        ->assertForbidden();
+        ->assertNotFound();
 });
