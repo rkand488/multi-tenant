@@ -165,10 +165,10 @@ const navItems = [
 
             <!-- Logo -->
             <div class="flex h-16 items-center gap-3 border-b border-gray-100 px-5">
-                <div class="flex size-8 items-center justify-center rounded-lg bg-emerald-600 text-sm font-bold text-white">A</div>
+                <img src="/logo.png" alt="Tenantrix" class="h-7" />
                 <div>
-                    <p class="text-sm font-bold text-gray-900">Acme Corp</p>
-                    <p class="text-xs text-gray-400">Pro Plan</p>
+                    <p class="text-sm font-bold text-gray-900">Tenantrix</p>
+                    <p class="text-xs text-gray-400">Acme Corp · Pro Plan</p>
                 </div>
             </div>
 

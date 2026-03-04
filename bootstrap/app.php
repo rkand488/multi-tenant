@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'tenant' => \App\Http\Middleware\IdentifyTenant::class,
+            'tenant.optional' => \App\Http\Middleware\IdentifyTenantIfPresent::class,
             'tenant.active' => \App\Http\Middleware\EnsureTenantIsActive::class,
             'subscription' => \App\Http\Middleware\RequireActiveSubscription::class,
             'feature' => \App\Http\Middleware\CheckFeatureAccess::class,

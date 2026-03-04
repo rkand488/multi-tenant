@@ -190,6 +190,12 @@ onMounted(() => {
                             Create Free Account
                             <ArrowRightIcon class="size-4" />
                         </Link>
+                        <Link
+                            :href="route('demo.admin')"
+                            class="inline-flex items-center gap-2 rounded-xl border-2 border-white/30 px-8 py-4 text-sm font-bold text-white backdrop-blur transition-all hover:border-white/60 hover:bg-white/10"
+                        >
+                            Try Demo
+                        </Link>
                         <a
                             href="mailto:sales@yoursaas.com"
                             class="inline-flex items-center gap-2 rounded-xl border-2 border-white/30 px-8 py-4 text-sm font-bold text-white backdrop-blur transition-all hover:border-white/60 hover:bg-white/10"

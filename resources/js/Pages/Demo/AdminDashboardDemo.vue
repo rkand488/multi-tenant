@@ -158,9 +158,9 @@ const navItems = [
 
             <!-- Logo -->
             <div class="flex h-16 items-center gap-3 border-b border-gray-800 px-5">
-                <div class="flex size-8 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">S</div>
+                <img src="/logo.png" alt="Tenantrix" class="h-7" />
                 <div>
-                    <p class="text-sm font-bold text-white">SaaS Platform</p>
+                    <p class="text-sm font-bold text-white">Tenantrix</p>
                     <p class="text-xs text-gray-500">Admin Console</p>
                 </div>
             </div>

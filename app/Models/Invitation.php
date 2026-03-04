@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Central\Enums\UserRole;
+use App\Tenancy\Concerns\ScopedByTenant;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,7 @@ class Invitation extends Model
     use HasFactory;
 
     use HasUuids;
+    use ScopedByTenant;
 
     protected $connection = 'central';
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Central\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -30,6 +31,7 @@ class User extends Authenticatable
         'password',
         'role',
         'tenant_id',
+        'role_id',
     ];
 
     /** @var list<string> */
@@ -45,6 +47,15 @@ class User extends Authenticatable
             'password' => 'hashed',
             'role' => UserRole::class,
         ];
+    }
+
+    // -------------------------------------------------------------------------
+    // Relationships
+    // -------------------------------------------------------------------------
+
+    public function customRole(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'role_id');
     }
 
     // -------------------------------------------------------------------------

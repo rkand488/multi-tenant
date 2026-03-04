@@ -75,6 +75,12 @@ onUnmounted(() => {
                     >
                         {{ link.label }}
                     </a>
+                    <Link
+                        :href="route('demo.admin')"
+                        class="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+                    >
+                        Demo
+                    </Link>
                 </nav>
 
                 <!-- Desktop auth actions -->
@@ -129,6 +135,13 @@ onUnmounted(() => {
                         >
                             {{ link.label }}
                         </a>
+                        <Link
+                            :href="route('demo.admin')"
+                            class="rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                            @click="mobileMenuOpen = false"
+                        >
+                            Demo
+                        </Link>
                     </nav>
 
                     <div class="mt-4 flex flex-col gap-2 border-t border-gray-100 pt-4">

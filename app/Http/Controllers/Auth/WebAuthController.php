@@ -43,6 +43,26 @@ class WebAuthController extends Controller
             ])->onlyInput('email');
         }
 
+        // When the login form is submitted from a tenant subdomain or custom
+        // domain the IdentifyTenantIfPresent middleware will have resolved a
+        // tenant context.  Enforce that the authenticated user belongs to
+        // that tenant; log them out immediately and return a generic error
+        // if they do not, to prevent cross-tenant session hijacking.
+        $tenant = tenantOrNull();
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if ($tenant !== null && $user->tenant_id !== $tenant->id) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return back()->withErrors([
+                'email' => 'The provided credentials are incorrect.',
+            ])->onlyInput('email');
+        }
+
         $request->session()->regenerate();
 
         return redirect()->intended(route('tenant.dashboard'));
@@ -73,7 +93,13 @@ class WebAuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('tenant.dashboard');
+        // Redirect the owner to their workspace subdomain dashboard.
+        // Note: SESSION_DOMAIN must be set to ".{APP_DOMAIN}" in .env so that
+        // the session cookie is shared across subdomains (e.g. .tenantrix.test).
+        $tenant = $result['tenant'];
+        $dashboardUrl = 'https://'.$tenant->slug.'.'.config('tenancy.domain').'/dashboard';
+
+        return redirect()->away($dashboardUrl);
     }
 
     /**
