@@ -24,6 +24,12 @@ class DatabaseManager
     /**
      * Point the "tenant" connection at the given tenant's database and make
      * it the default connection for Eloquent queries.
+     *
+     * We deliberately omit DB::reconnect() here so that the actual TCP
+     * connection to the tenant database is opened lazily on the first query.
+     * This avoids an unnecessary connection round-trip on routes (e.g. login)
+     * that resolve a tenant for context/validation purposes but never execute
+     * a query against the tenant database.
      */
     public function connectTenant(Tenant $tenant): void
     {
@@ -32,7 +38,6 @@ class DatabaseManager
         config(['database.connections.'.$connectionName => $this->buildConnectionConfig($tenant)]);
 
         DB::purge($connectionName);
-        DB::reconnect($connectionName);
         DB::setDefaultConnection($connectionName);
     }
 
