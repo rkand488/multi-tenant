@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Web\Tenant;
 
 use App\Http\Controllers\Controller;
 use App\Models\Role;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -14,21 +13,15 @@ class RoleController extends Controller
 {
     public function index(): Response
     {
-        /** @var User $user */
-        $user = auth()->user();
-
-        $roles = $user->tenant_id
-            ? Role::where('tenant_id', $user->tenant_id)
-                ->orderBy('name')
-                ->get()
-                ->map(fn ($role) => [
-                    'id' => $role->id,
-                    'name' => $role->name,
-                    'description' => $role->description,
-                    'permissions' => $role->permissions ?? [],
-                    'users_count' => 0,
-                ])
-            : collect();
+        $roles = Role::orderBy('name')
+            ->get()
+            ->map(fn (Role $role) => [
+                'id' => $role->id,
+                'name' => $role->name,
+                'description' => $role->description,
+                'permissions' => $role->permissions ?? [],
+                'users_count' => 0,
+            ]);
 
         $availablePermissions = [
             'users.view',
@@ -56,13 +49,6 @@ class RoleController extends Controller
 
     public function show(Role $role): Response
     {
-        /** @var User $user */
-        $user = auth()->user();
-
-        if ($role->tenant_id !== $user->tenant_id) {
-            abort(403);
-        }
-
         $availablePermissions = [
             'users.view', 'users.create', 'users.update', 'users.delete',
             'roles.view', 'roles.create', 'roles.update', 'roles.delete',
@@ -110,13 +96,6 @@ class RoleController extends Controller
 
     public function update(Request $request, Role $role): RedirectResponse
     {
-        /** @var User $user */
-        $user = auth()->user();
-
-        if ($role->tenant_id !== $user->tenant_id) {
-            abort(403);
-        }
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:500',
@@ -135,13 +114,6 @@ class RoleController extends Controller
 
     public function destroy(Role $role): RedirectResponse
     {
-        /** @var User $user */
-        $user = auth()->user();
-
-        if ($role->tenant_id !== $user->tenant_id) {
-            abort(403);
-        }
-
         $role->delete();
 
         return back()->with('success', 'Role deleted successfully.');

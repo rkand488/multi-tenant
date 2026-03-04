@@ -16,11 +16,7 @@ class FileController extends Controller
 {
     public function index(): Response
     {
-        /** @var User $user */
-        $user = auth()->user();
-
         $files = TenantFile::on('central')
-            ->where('tenant_id', $user->tenant_id)
             ->with('uploader:id,name')
             ->orderByDesc('created_at')
             ->paginate(20)
@@ -37,9 +33,7 @@ class FileController extends Controller
             ]);
 
         // Total storage used in bytes
-        $usageBytes = TenantFile::on('central')
-            ->where('tenant_id', $user->tenant_id)
-            ->sum('size');
+        $usageBytes = TenantFile::on('central')->sum('size');
 
         $limitGb = 5; // Default; override from plan features when available
         $limitBytes = (int) ($limitGb * 1073741824);
@@ -81,11 +75,7 @@ class FileController extends Controller
 
     public function destroy(string $file): RedirectResponse
     {
-        /** @var User $user */
-        $user = auth()->user();
-
         $tenantFile = TenantFile::on('central')
-            ->where('tenant_id', $user->tenant_id)
             ->where('id', $file)
             ->firstOrFail();
 
@@ -97,11 +87,7 @@ class FileController extends Controller
 
     public function download(string $file): StreamedResponse
     {
-        /** @var User $user */
-        $user = auth()->user();
-
         $tenantFile = TenantFile::on('central')
-            ->where('tenant_id', $user->tenant_id)
             ->where('id', $file)
             ->firstOrFail();
 

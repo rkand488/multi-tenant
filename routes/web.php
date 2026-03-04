@@ -98,6 +98,7 @@ Route::middleware(['auth', 'tenant.optional', 'tenant_or_super_admin'])->prefix(
     Route::put('settings/password', [SettingsController::class, 'updatePassword'])->name('settings.update-password');
     Route::put('settings/team', [SettingsController::class, 'updateTeam'])->middleware('verified')->name('settings.update-team');
     Route::delete('settings/team', [SettingsController::class, 'destroyTeam'])->middleware('verified')->name('settings.destroy');
+    Route::post('settings/team/transfer-ownership', [SettingsController::class, 'transferOwnership'])->middleware('verified')->name('settings.transfer-ownership');
 
     // Billing (cancel/upgrade require verified email)
     Route::get('billing', [BillingController::class, 'index'])->name('billing.index');

@@ -61,9 +61,14 @@ class SettingsController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $tenant = $user->tenant_id
-            ? Tenant::on('central')->find($user->tenant_id)
-            : null;
+        $tenant = Tenant::on('central')->find($user->tenant_id);
+
+        $transferableMembers = $user->isTenantOwner()
+            ? User::where('id', '!=', $user->id)
+                ->orderBy('name')
+                ->get(['id', 'name', 'email'])
+                ->map(fn ($u) => ['id' => $u->id, 'name' => $u->name, 'email' => $u->email])
+            : collect();
 
         return Inertia::render('Tenant/Settings/Team', [
             'tenant' => $tenant ? [
@@ -73,6 +78,8 @@ class SettingsController extends Controller
                 'created_at' => $tenant->created_at?->toDateString(),
             ] : null,
             'timezones' => \DateTimeZone::listIdentifiers(),
+            'isOwner' => $user->isTenantOwner(),
+            'transferableMembers' => $transferableMembers,
         ]);
     }
 
@@ -131,5 +138,30 @@ class SettingsController extends Controller
         Auth::logout();
 
         return redirect('/')->with('status', 'Your workspace has been deleted.');
+    }
+
+    public function transferOwnership(Request $request): RedirectResponse
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        if (! $user->isTenantOwner()) {
+            abort(403, 'Only the workspace owner can transfer ownership.');
+        }
+
+        $validated = $request->validate([
+            'user_id' => ['required', 'integer', 'exists:central.users,id'],
+        ]);
+
+        $newOwner = User::findOrFail($validated['user_id']);
+
+        if ($newOwner->tenant_id !== $user->tenant_id) {
+            abort(403, 'User does not belong to this workspace.');
+        }
+
+        $user->update(['role' => \App\Central\Enums\UserRole::TenantUser]);
+        $newOwner->update(['role' => \App\Central\Enums\UserRole::TenantOwner]);
+
+        return back()->with('success', "Workspace ownership transferred to {$newOwner->name}.");
     }
 }

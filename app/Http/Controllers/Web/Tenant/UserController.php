@@ -22,18 +22,9 @@ class UserController extends Controller
 
     public function index(): Response
     {
-        /** @var User $user */
-        $user = auth()->user();
+        $roles = Role::orderBy('name')->get(['id', 'name', 'description']);
 
-        $roles = $user->tenant_id
-            ? Role::where('tenant_id', $user->tenant_id)->orderBy('name')->get(['id', 'name', 'description'])
-            : collect();
-
-        $query = $user->tenant_id
-            ? User::where('tenant_id', $user->tenant_id)->with('customRole')
-            : User::whereNull('tenant_id');
-
-        $users = $query->orderBy('name')->paginate(20);
+        $users = User::with('customRole')->orderBy('name')->paginate(20);
 
         return Inertia::render('Tenant/Users/Index', [
             'users' => $users->through(fn ($u) => [
@@ -57,13 +48,9 @@ class UserController extends Controller
         /** @var User $authUser */
         $authUser = auth()->user();
 
-        $target = User::where('tenant_id', $authUser->tenant_id)
-            ->where('id', $userId)
-            ->firstOrFail();
+        $target = User::findOrFail($userId);
 
-        $roles = $authUser->tenant_id
-            ? Role::where('tenant_id', $authUser->tenant_id)->orderBy('name')->get(['id', 'name'])
-            : collect();
+        $roles = Role::orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('Tenant/Users/Show', [
             'user' => [
@@ -86,17 +73,13 @@ class UserController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $tenant = $user->tenant_id
-            ? Tenant::on('central')->with('currentSubscription.plan')->find($user->tenant_id)
-            : null;
+        $tenant = Tenant::on('central')->with('currentSubscription.plan')->find($user->tenant_id);
 
         $planFeatures = $tenant?->currentSubscription?->plan?->features ?? [];
         $maxUsers = $planFeatures['max_users'] ?? 5;
-        $current = $user->tenant_id ? User::where('tenant_id', $user->tenant_id)->count() : 0;
+        $current = User::count();
 
-        $roles = $user->tenant_id
-            ? Role::where('tenant_id', $user->tenant_id)->orderBy('name')->get(['id', 'name', 'description'])
-            : collect();
+        $roles = Role::orderBy('name')->get(['id', 'name', 'description']);
 
         return Inertia::render('Tenant/Users/Create', [
             'roles' => $roles,
@@ -126,19 +109,15 @@ class UserController extends Controller
         /** @var User $authUser */
         $authUser = auth()->user();
 
-        $tenantUser = User::where('tenant_id', $authUser->tenant_id)
-            ->where('id', $user)
-            ->firstOrFail();
+        $tenantUser = User::findOrFail($user);
 
         $validated = $request->validate([
             'role_id' => ['nullable', 'integer', 'exists:central.roles,id'],
         ]);
 
-        // Ensure the role belongs to this tenant
+        // Ensure the role belongs to this tenant (ScopedByTenant filters by current tenant)
         if ($validated['role_id']) {
-            $roleExists = Role::where('id', $validated['role_id'])
-                ->where('tenant_id', $authUser->tenant_id)
-                ->exists();
+            $roleExists = Role::where('id', $validated['role_id'])->exists();
 
             if (! $roleExists) {
                 abort(403, 'Role does not belong to this tenant.');
@@ -155,10 +134,7 @@ class UserController extends Controller
         /** @var User $authUser */
         $authUser = auth()->user();
 
-        $tenantUser = User::on('central')
-            ->where('tenant_id', $authUser->tenant_id)
-            ->where('id', $user)
-            ->firstOrFail();
+        $tenantUser = User::findOrFail($user);
 
         if ($tenantUser->id === $authUser->id) {
             return back()->withErrors(['user' => 'You cannot remove yourself.']);
@@ -179,10 +155,7 @@ class UserController extends Controller
         /** @var User $authUser */
         $authUser = auth()->user();
 
-        $tenantUser = User::on('central')
-            ->where('tenant_id', $authUser->tenant_id)
-            ->where('id', $user)
-            ->firstOrFail();
+        $tenantUser = User::findOrFail($user);
 
         // Find the most recent pending invitation for this user's email address.
         $invitation = Invitation::withoutGlobalScope(\App\Tenancy\Scopes\TenantScope::class)

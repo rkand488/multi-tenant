@@ -13,11 +13,7 @@ class AuditLogController extends Controller
 {
     public function index(Request $request): Response
     {
-        /** @var User $user */
-        $user = auth()->user();
-
         $query = AuditLog::on('central')
-            ->where('tenant_id', $user->tenant_id)
             ->with('user:id,name')
             ->orderByDesc('created_at');
 
@@ -54,8 +50,7 @@ class AuditLogController extends Controller
         ]);
 
         // Unique team members who appear in the audit log
-        $teamMembers = User::where('tenant_id', $user->tenant_id)
-            ->orderBy('name')
+        $teamMembers = User::orderBy('name')
             ->get(['id', 'name'])
             ->map(fn ($u) => ['id' => $u->id, 'name' => $u->name]);
 

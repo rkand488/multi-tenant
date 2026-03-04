@@ -42,7 +42,11 @@ class ProvisionTenantDatabase implements ShouldQueue
     public function handle(DatabaseManager $databaseManager): void
     {
         // ----------------------------------------------------------------
-        // [Option B] Uncomment when ready for the database-per-tenant model:
+        // [Option B – DB-per-tenant] Uncomment this line and add tenant-
+        // specific migrations under database/migrations/tenant/ to enable
+        // full database isolation. Keep commented while the single-DB
+        // architecture (tenant_id column scoping) is in use.
+        //
         // $this->createDatabase($databaseManager);
         // ----------------------------------------------------------------
 

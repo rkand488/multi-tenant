@@ -7,14 +7,16 @@ import Button from '@/Components/UI/Button.vue';
 import Alert from '@/Components/UI/Alert.vue';
 import Modal from '@/Components/UI/Modal.vue';
 import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
-import { BuildingOffice2Icon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
+import { ref, computed } from 'vue';
+import { ArrowPathIcon, BuildingOffice2Icon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 
 defineOptions({ layout: TenantLayout });
 
 const props = defineProps({
-    tenant:    { type: Object, required: true },
-    timezones: { type: Array,  default: () => [] },
+    tenant:              { type: Object, required: true },
+    timezones:           { type: Array,  default: () => [] },
+    isOwner:             { type: Boolean, default: false },
+    transferableMembers: { type: Array, default: () => [] },
 });
 
 // ── Team settings form ───────────────────────────────────────────────────────
@@ -49,6 +51,25 @@ const confirmDeleteWorkspace = () => {
 };
 
 const timezoneOptions = props.timezones.map((tz) => ({ value: tz, label: tz }));
+
+// ── Transfer ownership modal ─────────────────────────────────────────────────
+const showTransferModal = ref(false);
+const transferForm      = useForm({ user_id: null });
+
+const selectedMemberName = computed(
+    () => props.transferableMembers.find((m) => m.id === transferForm.user_id)?.name ?? '',
+);
+
+const memberOptions = computed(() =>
+    props.transferableMembers.map((m) => ({ value: m.id, label: `${m.name} (${m.email})` })),
+);
+
+const confirmTransfer = () => {
+    if (!transferForm.user_id) { return; }
+    transferForm.post(route('tenant.settings.transfer-ownership'), {
+        onSuccess: () => { showTransferModal.value = false; },
+    });
+};
 </script>
 
 <template>
@@ -131,6 +152,35 @@ const timezoneOptions = props.timezones.map((tz) => ({ value: tz, label: tz }));
             </dl>
         </Card>
 
+        <!-- ── Transfer Ownership ───────────────────────────────────── -->
+        <Card v-if="isOwner">
+            <template #header>
+                <div class="flex items-center gap-3 px-5 py-4">
+                    <div class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-900/20">
+                        <ArrowPathIcon class="size-5 text-amber-600 dark:text-amber-400" />
+                    </div>
+                    <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">Transfer Ownership</p>
+                </div>
+            </template>
+
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Transfer to another member</p>
+                    <p class="mt-0.5 text-xs text-gray-500">
+                        The new owner will have full control. You will become a regular member.
+                    </p>
+                </div>
+                <Button
+                    variant="secondary"
+                    class="shrink-0"
+                    :disabled="transferableMembers.length === 0"
+                    @click="showTransferModal = true"
+                >
+                    Transfer
+                </Button>
+            </div>
+        </Card>
+
         <!-- ── Danger zone ───────────────────────────────────────────── -->
         <Card class="border border-red-100 dark:border-red-900/30">
             <template #header>
@@ -185,6 +235,44 @@ const timezoneOptions = props.timezones.map((tz) => ({ value: tz, label: tz }));
                     @click="confirmDeleteWorkspace"
                 >
                     Yes, Delete Workspace
+                </Button>
+            </div>
+        </template>
+    </Modal>
+
+    <!-- ── Transfer ownership modal ──────────────────────────────────────── -->
+    <Modal :show="showTransferModal" @close="showTransferModal = false">
+        <template #title>Transfer Workspace Ownership</template>
+
+        <div class="space-y-4">
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                Select a member to become the new workspace owner. This action cannot be undone.
+            </p>
+
+            <Select
+                id="transfer-user"
+                v-model="transferForm.user_id"
+                label="New owner"
+                placeholder="Select a member…"
+                :options="memberOptions"
+                :error="transferForm.errors.user_id"
+            />
+
+            <Alert v-if="selectedMemberName" variant="warning">
+                <strong>{{ selectedMemberName }}</strong> will become the workspace owner. You will become a regular member.
+            </Alert>
+        </div>
+
+        <template #footer>
+            <div class="flex justify-end gap-3">
+                <Button variant="secondary" @click="showTransferModal = false">Cancel</Button>
+                <Button
+                    variant="primary"
+                    :disabled="!transferForm.user_id"
+                    :loading="transferForm.processing"
+                    @click="confirmTransfer"
+                >
+                    Transfer Ownership
                 </Button>
             </div>
         </template>

@@ -15,9 +15,7 @@ class DashboardController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $tenant = $user->tenant_id
-            ? Tenant::on('central')->with('currentSubscription.plan')->find($user->tenant_id)
-            : null;
+        $tenant = Tenant::on('central')->with('currentSubscription.plan')->find($user->tenant_id);
 
         $subscription = $tenant?->currentSubscription;
         $plan = $subscription?->plan;
@@ -25,9 +23,7 @@ class DashboardController extends Controller
         $maxUsers = $planFeatures['max_users'] ?? 5;
         $storageLimit = ($planFeatures['storage_gb'] ?? 5) * 1024;
 
-        $userCount = $user->tenant_id
-            ? User::where('tenant_id', $user->tenant_id)->count()
-            : 0;
+        $userCount = User::count();
 
         return Inertia::render('Tenant/Dashboard', [
             'stats' => [

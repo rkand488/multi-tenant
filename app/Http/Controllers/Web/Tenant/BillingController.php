@@ -25,9 +25,7 @@ class BillingController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $tenant = $user->tenant_id
-            ? Tenant::on('central')->with('currentSubscription.plan')->find($user->tenant_id)
-            : null;
+        $tenant = Tenant::on('central')->with('currentSubscription.plan')->find($user->tenant_id);
 
         $subscription = $tenant?->currentSubscription;
         $currentPlan = $subscription?->plan;
@@ -47,25 +45,23 @@ class BillingController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $invoices = $user->tenant_id
-            ? Invoice::on('central')
-                ->where('tenant_id', $user->tenant_id)
-                ->orderByDesc('period_start')
-                ->paginate(20)
-                ->through(fn (Invoice $inv) => [
-                    'id' => $inv->id,
-                    'number' => $inv->number,
-                    'status' => $inv->status?->value ?? $inv->status,
-                    'status_label' => $inv->status?->label() ?? $inv->status,
-                    'amount_due' => $inv->amount_due,
-                    'amount_paid' => $inv->amount_paid,
-                    'currency' => $inv->currency ?? 'USD',
-                    'formatted_total' => '$'.number_format(($inv->amount_due ?? 0) / 100, 2),
-                    'period_start' => $inv->period_start?->toISOString(),
-                    'period_end' => $inv->period_end?->toISOString(),
-                    'paid_at' => $inv->paid_at?->toISOString(),
-                ])
-            : collect([]);
+        $invoices = Invoice::on('central')
+            ->where('tenant_id', $user->tenant_id)
+            ->orderByDesc('period_start')
+            ->paginate(20)
+            ->through(fn (Invoice $inv) => [
+                'id' => $inv->id,
+                'number' => $inv->number,
+                'status' => $inv->status?->value ?? $inv->status,
+                'status_label' => $inv->status?->label() ?? $inv->status,
+                'amount_due' => $inv->amount_due,
+                'amount_paid' => $inv->amount_paid,
+                'currency' => $inv->currency ?? 'USD',
+                'formatted_total' => '$'.number_format(($inv->amount_due ?? 0) / 100, 2),
+                'period_start' => $inv->period_start?->toISOString(),
+                'period_end' => $inv->period_end?->toISOString(),
+                'paid_at' => $inv->paid_at?->toISOString(),
+            ]);
 
         return Inertia::render('Tenant/Billing/Invoices', [
             'invoices' => $invoices,
@@ -77,19 +73,19 @@ class BillingController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $tenant = $user->tenant_id
-            ? Tenant::on('central')->with('currentSubscription.plan')->find($user->tenant_id)
-            : null;
+        $tenant = Tenant::on('central')->with('currentSubscription.plan')->find($user->tenant_id);
 
         $subscription = $tenant?->currentSubscription;
         $plan = $subscription?->plan;
         $plans = Plan::on('central')->where('is_active', true)->orderBy('sort_order')->get();
-        $invoices = $user->tenant_id
-            ? Invoice::on('central')->where('tenant_id', $user->tenant_id)->orderByDesc('period_start')->limit(12)->get()
-            : collect();
+        $invoices = Invoice::on('central')
+            ->where('tenant_id', $user->tenant_id)
+            ->orderByDesc('period_start')
+            ->limit(12)
+            ->get();
 
         $planFeatures = $plan?->features ?? [];
-        $userCount = $user->tenant_id ? User::where('tenant_id', $user->tenant_id)->count() : 0;
+        $userCount = User::count();
 
         return Inertia::render('Tenant/Billing/Subscription', [
             'subscription' => $subscription,
