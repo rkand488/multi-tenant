@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\WebAuthController;
 use App\Http\Controllers\Web\Admin\AnalyticsController as AdminAnalyticsController;
@@ -54,6 +55,13 @@ Route::post('/invitations/{token}/accept', [AcceptInvitationController::class, '
 
 Route::post('/logout', [WebAuthController::class, 'logout'])->middleware('auth')->name('logout');
 
+// Email verification
+Route::middleware('auth')->group(function () {
+    Route::get('/email/verify', [EmailVerificationController::class, 'notice'])->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware('signed')->name('verification.verify');
+    Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])->middleware('throttle:6,1')->name('verification.send');
+});
+
 // Tenant routes
 Route::middleware(['auth', 'tenant.optional', 'tenant_or_super_admin'])->prefix('dashboard')->name('tenant.')->group(function () {
     // Users / team members
@@ -88,16 +96,16 @@ Route::middleware(['auth', 'tenant.optional', 'tenant_or_super_admin'])->prefix(
     Route::get('settings/team', [SettingsController::class, 'team'])->name('settings.team');
     Route::put('settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.update-profile');
     Route::put('settings/password', [SettingsController::class, 'updatePassword'])->name('settings.update-password');
-    Route::put('settings/team', [SettingsController::class, 'updateTeam'])->name('settings.update-team');
-    Route::delete('settings/team', [SettingsController::class, 'destroyTeam'])->name('settings.destroy');
+    Route::put('settings/team', [SettingsController::class, 'updateTeam'])->middleware('verified')->name('settings.update-team');
+    Route::delete('settings/team', [SettingsController::class, 'destroyTeam'])->middleware('verified')->name('settings.destroy');
 
-    // Billing
+    // Billing (cancel/upgrade require verified email)
     Route::get('billing', [BillingController::class, 'index'])->name('billing.index');
     Route::get('billing/plans', [BillingController::class, 'plans'])->name('billing.plans');
     Route::get('billing/invoices', [BillingController::class, 'invoices'])->name('billing.invoices');
     Route::get('billing/invoices/{invoice}', [BillingController::class, 'showInvoice'])->name('billing.invoices.show');
-    Route::post('billing/cancel', [BillingController::class, 'cancel'])->name('billing.cancel');
-    Route::post('billing/upgrade', [BillingController::class, 'upgrade'])->name('billing.upgrade');
+    Route::post('billing/cancel', [BillingController::class, 'cancel'])->middleware('verified')->name('billing.cancel');
+    Route::post('billing/upgrade', [BillingController::class, 'upgrade'])->middleware('verified')->name('billing.upgrade');
 
     // Usage dashboard
     Route::get('usage', [UsageController::class, 'index'])->name('usage.index');

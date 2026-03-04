@@ -3,11 +3,14 @@
 namespace App\Central\Models;
 
 use App\Models\User;
+use App\Tenancy\Concerns\ScopedByTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AuditLog extends Model
 {
+    use ScopedByTenant;
+
     protected $connection = 'central';
 
     /** @var list<string> */

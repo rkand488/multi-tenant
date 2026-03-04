@@ -3,19 +3,22 @@
 namespace App\Models;
 
 use App\Central\Enums\UserRole;
+use App\Tenancy\Concerns\ScopedByTenant;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens;
 
     use HasFactory;
     use Notifiable;
+    use ScopedByTenant;
 
     /**
      * The database connection that should be used by the model.

@@ -46,8 +46,8 @@ it('cannot delete a user from a different tenant via API', function (): void {
         ->deleteJson("/api/v1/tenant/users/{$userB->id}")
         ->assertStatus(404);
 
-    // User B must still exist
-    expect(User::on('central')->find($userB->id))->not->toBeNull();
+    // User B must still exist (bypass scope since we're checking a different tenant's record)
+    expect(User::on('central')->withoutGlobalScopes()->find($userB->id))->not->toBeNull();
 });
 
 it('listing users only returns users from the authenticated tenant', function (): void {

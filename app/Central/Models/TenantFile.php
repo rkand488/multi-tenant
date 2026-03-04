@@ -3,6 +3,7 @@
 namespace App\Central\Models;
 
 use App\Models\User;
+use App\Tenancy\Concerns\ScopedByTenant;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,7 @@ class TenantFile extends Model
     use HasFactory;
 
     use HasUuids;
+    use ScopedByTenant;
 
     protected $connection = 'central';
 
