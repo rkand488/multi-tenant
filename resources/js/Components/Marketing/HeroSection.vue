@@ -133,13 +133,13 @@ onMounted(() => {
                             Start Building Free
                             <ArrowRightIcon class="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
                         </Link>
-                        <button
+                        <Link
+                            :href="route('demo.admin')"
                             class="group inline-flex items-center gap-2.5 rounded-xl border border-gray-600 bg-gray-800/60 px-7 py-3.5 text-sm font-bold text-gray-200 backdrop-blur transition-all duration-200 hover:border-gray-400 hover:bg-gray-700/80 hover:text-white active:scale-[0.97]"
-                            @click="document.querySelector('#screenshots')?.scrollIntoView({ behavior: 'smooth' })"
                         >
                             <PlayIcon class="size-4 fill-current opacity-70 transition-opacity group-hover:opacity-100" />
                             Watch Demo
-                        </button>
+                        </Link>
                     </div>
 
                     <!-- Social proof row -->
