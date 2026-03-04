@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->name('api.')->group(function (): void {
     Route::prefix('auth')->group(function (): void {
         Route::post('register', [AuthController::class, 'register'])->name('auth.register');
-        Route::post('login', [AuthController::class, 'login'])->name('auth.login');
+        Route::middleware('tenant.optional')->post('login', [AuthController::class, 'login'])->name('auth.login');
     });
 
     Route::get('invitations/{token}', [InvitationController::class, 'show'])->name('invitations.show');

@@ -3,6 +3,7 @@
 namespace App\Auth\Services;
 
 use App\Models\User;
+use App\Tenancy\TenantContext;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -12,8 +13,18 @@ use Illuminate\Validation\ValidationException;
  */
 class AuthenticationService
 {
+    public function __construct(
+        private readonly TenantContext $tenantContext,
+    ) {}
+
     /**
      * Authenticate a user and issue a Sanctum API token.
+     *
+     * When the request arrives from a tenant subdomain or configured custom
+     * domain the TenantContext will already be populated by the
+     * IdentifyTenantIfPresent middleware.  In that case we additionally
+     * enforce that the user belongs to that specific tenant, preventing a
+     * user from one workspace logging in via another tenant's domain.
      *
      * @param  array{email: string, password: string, device_name?: string}  $credentials
      *
@@ -26,6 +37,18 @@ class AuthenticationService
             ->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
+        }
+
+        // If the login originates from a tenant domain, the user must belong
+        // to that specific tenant.  A super-admin (no tenant_id) or a user
+        // from a different tenant will be rejected with a generic error to
+        // avoid leaking information about account existence.
+        $tenant = $this->tenantContext->getOrNull();
+
+        if ($tenant !== null && $user->tenant_id !== $tenant->id) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);

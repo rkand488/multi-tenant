@@ -31,7 +31,7 @@ Route::prefix('demo')->name('demo.')->group(function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'tenant_or_super_admin'])->name('tenant.dashboard');
 
-Route::middleware('guest')->group(function () {
+Route::middleware(['guest', 'tenant.optional'])->group(function () {
     Route::get('/login', [WebAuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [WebAuthController::class, 'login']);
 
