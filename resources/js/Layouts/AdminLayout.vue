@@ -30,7 +30,7 @@ const notifRef          = ref(null);
 onClickOutside(notifRef, () => (notifPanelOpen.value = false));
 
 const navigation = [
-    { label: 'Dashboard',     href: route('admin.dashboard'),           icon: HomeIcon },
+    { label: 'Dashboard',     href: route('admin.dashboard'),           icon: HomeIcon,                    exact: true },
     { label: 'Tenants',       href: route('admin.tenants.index'),        icon: BuildingOfficeIcon },
     { label: 'Plans',         href: route('admin.plans.index'),          icon: CreditCardIcon },
     { label: 'Subscriptions', href: route('admin.subscriptions.index'),  icon: ClipboardDocumentListIcon },
@@ -58,7 +58,10 @@ const toggleNotif  = () => (notifPanelOpen.value = !notifPanelOpen.value);
 
 const signOut = () => router.post(route('logout'));
 
-const isActive = (href) => page.url.startsWith(href.replace(window.location.origin, ''));
+const isActive = (href, exact = false) => {
+    const path = href.replace(window.location.origin, '');
+    return exact ? page.url === path : page.url.startsWith(path);
+};
 </script>
 
 <template>
@@ -89,7 +92,7 @@ const isActive = (href) => page.url.startsWith(href.replace(window.location.orig
                     :key="item.label"
                     :href="item.href"
                     class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
-                    :class="isActive(item.href)
+                    :class="isActive(item.href, item.exact)
                         ? 'bg-white/15 text-white shadow-sm ring-1 ring-white/20'
                         : 'text-blue-100/80 hover:bg-white/10 hover:text-white'"
                 >

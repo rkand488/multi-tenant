@@ -9,7 +9,7 @@ import Dropdown from '@/Components/UI/Dropdown.vue';
 import DropdownItem from '@/Components/UI/DropdownItem.vue';
 import { Link, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
-import { MagnifyingGlassIcon, FunnelIcon } from '@heroicons/vue/24/outline';
+import { MagnifyingGlassIcon, FunnelIcon, BuildingOfficeIcon } from '@heroicons/vue/24/outline';
 import { useDebounceFn } from '@vueuse/core';
 
 defineOptions({ layout: AdminLayout });
