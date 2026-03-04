@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Admin\TenantController as AdminTenantController;
 use App\Http\Controllers\Api\Admin\UsageStatisticController as AdminUsageStatisticController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\InvitationController;
+use App\Http\Controllers\Api\Auth\TokenController;
 use App\Http\Controllers\Api\Billing\InvoiceController;
 use App\Http\Controllers\Api\Billing\PlanController;
 use App\Http\Controllers\Api\Billing\SubscriptionController;
@@ -36,6 +37,11 @@ Route::prefix('v1')->name('api.')->group(function (): void {
             Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
             Route::post('logout-all', [AuthController::class, 'logoutAll'])->name('auth.logout-all');
         });
+
+        // API Token management
+        Route::apiResource('tokens', TokenController::class)
+            ->only(['index', 'store', 'destroy'])
+            ->names(['index' => 'tokens.index', 'store' => 'tokens.store', 'destroy' => 'tokens.destroy']);
 
         Route::prefix('admin')
             ->middleware('super_admin')

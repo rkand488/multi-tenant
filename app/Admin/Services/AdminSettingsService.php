@@ -13,7 +13,7 @@ class AdminSettingsService
      * @var array<string, mixed>
      */
     private array $defaults = [
-        'app_name' => '',
+        'app_name' => 'Tenantrix',
         'app_url' => '',
         'support_email' => '',
         'allow_registration' => true,
@@ -21,7 +21,7 @@ class AdminSettingsService
         'session_lifetime' => 120,
         'mail_driver' => 'smtp',
         'mail_from_address' => '',
-        'mail_from_name' => '',
+        'mail_from_name' => 'Tenantrix',
         'notify_new_signup' => true,
         'notify_payment_fail' => true,
         'notify_admin_email' => '',

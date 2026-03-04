@@ -12,8 +12,10 @@ use App\Http\Controllers\Web\DemoController;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\Invitation\AcceptInvitationController;
 use App\Http\Controllers\Web\Tenant\ActivityLogController;
+use App\Http\Controllers\Web\Tenant\AuditLogController;
 use App\Http\Controllers\Web\Tenant\BillingController;
 use App\Http\Controllers\Web\Tenant\DashboardController;
+use App\Http\Controllers\Web\Tenant\FileController;
 use App\Http\Controllers\Web\Tenant\RoleController;
 use App\Http\Controllers\Web\Tenant\SettingsController;
 use App\Http\Controllers\Web\Tenant\UsageController;
@@ -57,6 +59,7 @@ Route::middleware(['auth', 'tenant.optional', 'tenant_or_super_admin'])->prefix(
     // Users / team members
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('users/create', [UserController::class, 'create'])->name('users.create');
+    Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
     Route::post('users', [UserController::class, 'store'])->name('users.store');
     Route::patch('users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
@@ -64,12 +67,23 @@ Route::middleware(['auth', 'tenant.optional', 'tenant_or_super_admin'])->prefix(
 
     // Roles
     Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
+    Route::get('roles/{role}', [RoleController::class, 'show'])->name('roles.show');
     Route::post('roles', [RoleController::class, 'store'])->name('roles.store');
     Route::put('roles/{role}', [RoleController::class, 'update'])->name('roles.update');
     Route::delete('roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
 
+    // Files
+    Route::get('files', [FileController::class, 'index'])->name('files.index');
+    Route::post('files', [FileController::class, 'store'])->name('files.store');
+    Route::delete('files/{file}', [FileController::class, 'destroy'])->name('files.destroy');
+    Route::get('files/{file}/download', [FileController::class, 'download'])->name('files.download');
+
+    // Audit logs
+    Route::get('audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
+
     // Settings
     Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::get('settings/api-tokens', [SettingsController::class, 'apiTokens'])->name('settings.api-tokens');
     Route::get('settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
     Route::get('settings/team', [SettingsController::class, 'team'])->name('settings.team');
     Route::put('settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.update-profile');
@@ -79,6 +93,9 @@ Route::middleware(['auth', 'tenant.optional', 'tenant_or_super_admin'])->prefix(
 
     // Billing
     Route::get('billing', [BillingController::class, 'index'])->name('billing.index');
+    Route::get('billing/plans', [BillingController::class, 'plans'])->name('billing.plans');
+    Route::get('billing/invoices', [BillingController::class, 'invoices'])->name('billing.invoices');
+    Route::get('billing/invoices/{invoice}', [BillingController::class, 'showInvoice'])->name('billing.invoices.show');
     Route::post('billing/cancel', [BillingController::class, 'cancel'])->name('billing.cancel');
     Route::post('billing/upgrade', [BillingController::class, 'upgrade'])->name('billing.upgrade');
 

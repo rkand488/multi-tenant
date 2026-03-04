@@ -15,6 +15,12 @@ pest()->extend(Tests\TestCase::class)
     ->use(Tests\RefreshEveryDatabase::class)
     ->in('Feature');
 
+pest()->extend(Tests\TestCase::class)
+    ->in('Architecture');
+
+pest()->extend(Tests\TestCase::class)
+    ->in('Unit');
+
 /*
 |--------------------------------------------------------------------------
 | Expectations

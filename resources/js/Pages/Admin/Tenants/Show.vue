@@ -14,6 +14,12 @@ import {
     CreditCardIcon,
     ServerIcon,
     ClockIcon,
+    PencilSquareIcon,
+    FolderIcon,
+    ClipboardDocumentCheckIcon,
+    KeyIcon,
+    ReceiptPercentIcon,
+    ListBulletIcon,
 } from '@heroicons/vue/24/outline';
 
 defineOptions({ layout: AdminLayout });
@@ -106,6 +112,13 @@ const activityColumns = [
             </div>
 
             <div class="flex items-center gap-2">
+                <Link
+                    :href="route('admin.tenants.edit', tenant.id)"
+                    class="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+                >
+                    <PencilSquareIcon class="size-4" />
+                    Edit
+                </Link>
                 <Button
                     variant="secondary"
                     size="sm"
@@ -164,6 +177,42 @@ const activityColumns = [
                 </div>
             </Card>
         </div>
+
+        <!-- ── Quick Links ─────────────────────────────────────────────── -->
+        <Card>
+            <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Manage tenant</p>
+            <div class="flex flex-wrap gap-2">
+                <Link
+                    :href="route('admin.tenants.edit', tenant.id)"
+                    class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                >
+                    <PencilSquareIcon class="size-4 text-indigo-500" />
+                    Edit Tenant
+                </Link>
+                <Link
+                    :href="route('admin.subscriptions.index')"
+                    class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                >
+                    <CreditCardIcon class="size-4 text-emerald-500" />
+                    Subscriptions
+                </Link>
+                <Link
+                    :href="route('admin.plans.index')"
+                    class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                >
+                    <ListBulletIcon class="size-4 text-blue-500" />
+                    Plans
+                </Link>
+                <Link
+                    v-if="subscription?.plan_id"
+                    :href="route('admin.plans.edit', subscription.plan_id)"
+                    class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                >
+                    <PencilSquareIcon class="size-4 text-violet-500" />
+                    Edit Current Plan
+                </Link>
+            </div>
+        </Card>
 
         <!-- ── Subscription detail ─────────────────────────────────────── -->
         <Card title="Subscription">

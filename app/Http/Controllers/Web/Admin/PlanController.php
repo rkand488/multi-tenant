@@ -26,7 +26,7 @@ class PlanController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('Admin/Plans/Create');
+        return Inertia::render('Admin/Plans/Form');
     }
 
     public function store(StorePlanRequest $request): RedirectResponse
@@ -51,7 +51,7 @@ class PlanController extends Controller
 
     public function edit(Plan $plan): Response
     {
-        return Inertia::render('Admin/Plans/Edit', [
+        return Inertia::render('Admin/Plans/Form', [
             'plan' => $plan,
         ]);
     }

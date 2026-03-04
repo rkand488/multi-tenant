@@ -15,6 +15,28 @@ use Inertia\Response;
 
 class SettingsController extends Controller
 {
+    public function apiTokens(): Response
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        $tokens = $user->tokens()
+            ->orderByDesc('last_used_at')
+            ->get()
+            ->map(fn ($token) => [
+                'id' => $token->id,
+                'name' => $token->name,
+                'abilities' => $token->abilities,
+                'last_used_at' => $token->last_used_at?->toISOString(),
+                'expires_at' => $token->expires_at?->toISOString(),
+                'created_at' => $token->created_at?->toISOString(),
+            ]);
+
+        return Inertia::render('Tenant/Profile/ApiTokens', [
+            'tokens' => $tokens,
+        ]);
+    }
+
     public function index(): RedirectResponse
     {
         return redirect()->route('tenant.settings.profile');

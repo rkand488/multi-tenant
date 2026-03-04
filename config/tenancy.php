@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'central_domain' => env('CENTRAL_DOMAIN', 'app.com'),
+    'central_domain' => env('CENTRAL_DOMAIN', 'tenantrix.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -24,7 +24,7 @@ return [
     |
     */
 
-    'domain' => env('APP_DOMAIN', 'app.com'),
+    'domain' => env('APP_DOMAIN', 'tenantrix.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -32,11 +32,11 @@ return [
     |--------------------------------------------------------------------------
     |
     | Every tenant database is named using this prefix followed by the tenant
-    | slug.  For example: tenant_acme, tenant_globex.
+    | slug.  For example: tenantrix_acme, tenantrix_globex.
     |
     */
 
-    'db_prefix' => env('TENANT_DB_PREFIX', 'tenant_'),
+    'db_prefix' => env('TENANT_DB_PREFIX', 'tenantrix_'),
 
     /*
     |--------------------------------------------------------------------------
@@ -48,7 +48,7 @@ return [
     |
     */
 
-    'queue_prefix' => env('TENANT_QUEUE_PREFIX', 'tenant-'),
+    'queue_prefix' => env('TENANT_QUEUE_PREFIX', 'tenantrix-'),
 
     /*
     |--------------------------------------------------------------------------

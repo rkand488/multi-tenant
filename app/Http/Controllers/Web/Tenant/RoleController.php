@@ -54,6 +54,38 @@ class RoleController extends Controller
         ]);
     }
 
+    public function show(Role $role): Response
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        if ($role->tenant_id !== $user->tenant_id) {
+            abort(403);
+        }
+
+        $availablePermissions = [
+            'users.view', 'users.create', 'users.update', 'users.delete',
+            'roles.view', 'roles.create', 'roles.update', 'roles.delete',
+            'settings.view', 'settings.update',
+            'billing.view', 'billing.manage',
+            'files.view', 'files.upload', 'files.delete',
+        ];
+
+        return Inertia::render('Tenant/Roles/Show', [
+            'role' => [
+                'id' => $role->id,
+                'name' => $role->name,
+                'description' => $role->description,
+                'permissions' => $role->permissions ?? [],
+                'is_system' => (bool) ($role->is_system ?? false),
+                'tenant_id' => $role->tenant_id,
+            ],
+            'allPermissions' => $availablePermissions,
+            'canEdit' => true,
+            'canDelete' => ! ($role->is_system ?? false),
+        ]);
+    }
+
     public function store(Request $request): RedirectResponse
     {
         /** @var User $user */

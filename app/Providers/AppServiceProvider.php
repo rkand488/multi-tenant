@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Central\Models\PersonalAccessToken;
 use App\Models\Invitation;
+use App\Models\Role;
 use App\Models\User;
 use App\Policies\InvitationPolicy;
+use App\Policies\RolePolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Gate;
@@ -26,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Invitation::class, InvitationPolicy::class);
+        Gate::policy(Role::class, RolePolicy::class);
 
         // Route model binding for central database models
         Route::bind('plan', function (string $value) {

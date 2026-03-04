@@ -8,7 +8,9 @@ import {
     CreditCardIcon,
     Cog6ToothIcon,
     ClipboardDocumentListIcon,
+    ClipboardDocumentCheckIcon,
     ChartBarIcon,
+    FolderIcon,
 } from '@heroicons/vue/24/outline';
 import Sidebar from '@/Components/Navigation/Sidebar.vue';
 import Topbar from '@/Components/Navigation/Topbar.vue';
@@ -42,10 +44,12 @@ const navigation = [
     { label: 'Dashboard',    href: route('tenant.dashboard'),           icon: HomeIcon },
     { label: 'Users',        href: route('tenant.users.index'),          icon: UsersIcon },
     { label: 'Roles',        href: route('tenant.roles.index'),          icon: ShieldCheckIcon },
+    { label: 'Files',        href: route('tenant.files.index'),          icon: FolderIcon },
     { label: 'Usage',        href: route('tenant.usage.index'),          icon: ChartBarIcon },
     { label: 'Billing',      href: route('tenant.billing.index'),        icon: CreditCardIcon },
     { label: 'Settings',     href: route('tenant.settings.index'),       icon: Cog6ToothIcon },
     { label: 'Activity Log', href: route('tenant.activity-log.index'),   icon: ClipboardDocumentListIcon },
+    { label: 'Audit Log',    href: route('tenant.audit-logs.index'),     icon: ClipboardDocumentCheckIcon },
 ];
 </script>
 

@@ -20,6 +20,58 @@ class BillingController extends Controller
         private readonly SubscriptionService $subscriptionService,
     ) {}
 
+    public function plans(): Response
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        $tenant = $user->tenant_id
+            ? Tenant::on('central')->with('currentSubscription.plan')->find($user->tenant_id)
+            : null;
+
+        $subscription = $tenant?->currentSubscription;
+        $currentPlan = $subscription?->plan;
+        $plans = Plan::on('central')->where('is_active', true)->orderBy('sort_order')->get();
+        $billingCycle = $subscription?->billing_interval ?? 'monthly';
+
+        return Inertia::render('Tenant/Billing/Plans', [
+            'plans' => $plans,
+            'currentPlan' => $currentPlan,
+            'subscription' => $subscription,
+            'billingCycle' => $billingCycle,
+        ]);
+    }
+
+    public function invoices(): Response
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        $invoices = $user->tenant_id
+            ? Invoice::on('central')
+                ->where('tenant_id', $user->tenant_id)
+                ->orderByDesc('period_start')
+                ->paginate(20)
+                ->through(fn (Invoice $inv) => [
+                    'id' => $inv->id,
+                    'number' => $inv->number,
+                    'status' => $inv->status?->value ?? $inv->status,
+                    'status_label' => $inv->status?->label() ?? $inv->status,
+                    'amount_due' => $inv->amount_due,
+                    'amount_paid' => $inv->amount_paid,
+                    'currency' => $inv->currency ?? 'USD',
+                    'formatted_total' => '$'.number_format(($inv->amount_due ?? 0) / 100, 2),
+                    'period_start' => $inv->period_start?->toISOString(),
+                    'period_end' => $inv->period_end?->toISOString(),
+                    'paid_at' => $inv->paid_at?->toISOString(),
+                ])
+            : collect([]);
+
+        return Inertia::render('Tenant/Billing/Invoices', [
+            'invoices' => $invoices,
+        ]);
+    }
+
     public function index(): Response
     {
         /** @var User $user */
@@ -49,6 +101,21 @@ class BillingController extends Controller
                 'storage' => ['used' => 0, 'limit' => ($planFeatures['storage_gb'] ?? 5) * 1024],
             ],
         ]);
+    }
+
+    public function showInvoice(string $invoiceId): \Illuminate\Http\RedirectResponse
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        Invoice::on('central')
+            ->where('tenant_id', $user->tenant_id)
+            ->where('id', $invoiceId)
+            ->firstOrFail();
+
+        // TODO: Implement PDF generation/download
+        return redirect()->route('tenant.billing.invoices')
+            ->with('info', 'Invoice PDF generation is not yet available.');
     }
 
     public function cancel(): RedirectResponse

@@ -52,6 +52,35 @@ class UserController extends Controller
         ]);
     }
 
+    public function show(string $userId): Response
+    {
+        /** @var User $authUser */
+        $authUser = auth()->user();
+
+        $target = User::where('tenant_id', $authUser->tenant_id)
+            ->where('id', $userId)
+            ->firstOrFail();
+
+        $roles = $authUser->tenant_id
+            ? Role::where('tenant_id', $authUser->tenant_id)->orderBy('name')->get(['id', 'name'])
+            : collect();
+
+        return Inertia::render('Tenant/Users/Show', [
+            'user' => [
+                'id' => $target->id,
+                'name' => $target->name,
+                'email' => $target->email,
+                'role' => $target->role?->value ?? null,
+                'role_id' => $target->role_id,
+                'email_verified_at' => $target->email_verified_at?->toISOString(),
+                'created_at' => $target->created_at?->toISOString(),
+            ],
+            'roles' => $roles,
+            'canEdit' => $authUser->id !== $target->id,
+            'canDelete' => $authUser->id !== $target->id && ! $target->isTenantOwner(),
+        ]);
+    }
+
     public function create(): Response
     {
         /** @var User $user */
