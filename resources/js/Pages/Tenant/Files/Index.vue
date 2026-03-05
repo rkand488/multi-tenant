@@ -13,9 +13,13 @@ import {
     ArrowUpTrayIcon,
     TrashIcon,
     ArrowDownTrayIcon,
+    EyeIcon,
     DocumentIcon,
     PhotoIcon,
     DocumentTextIcon,
+    MusicalNoteIcon,
+    FilmIcon,
+    ArchiveBoxIcon,
 } from '@heroicons/vue/24/outline';
 
 defineOptions({ layout: TenantLayout });
@@ -84,6 +88,70 @@ const confirmDelete = () => {
     });
 };
 
+// ── Preview ───────────────────────────────────────────────────────────────────
+const showPreviewModal = ref(false);
+const previewingFile = ref(null);
+
+const canPreview = (mimeType) => {
+    if (!mimeType) {
+        return false;
+    }
+
+    return mimeType.startsWith('image/')
+        || mimeType.startsWith('audio/')
+        || mimeType.startsWith('video/')
+        || mimeType === 'application/pdf'
+        || mimeType.startsWith('text/')
+        || mimeType === 'application/json'
+        || mimeType === 'application/xml'
+        || mimeType === 'application/xhtml+xml';
+};
+
+const previewType = computed(() => {
+    const mimeType = previewingFile.value?.mime_type ?? '';
+
+    if (mimeType.startsWith('image/')) {
+        return 'image';
+    }
+
+    if (mimeType.startsWith('audio/')) {
+        return 'audio';
+    }
+
+    if (mimeType.startsWith('video/')) {
+        return 'video';
+    }
+
+    return 'iframe';
+});
+
+const previewUrl = computed(() => {
+    if (!previewingFile.value) {
+        return null;
+    }
+
+    return route('tenant.files.preview', {
+        file: previewingFile.value.id,
+        tenant_id: selectedTenantId.value || undefined,
+    });
+});
+
+const openFile = (file) => {
+    if (!canPreview(file.mime_type)) {
+        download(file);
+
+        return;
+    }
+
+    previewingFile.value = file;
+    showPreviewModal.value = true;
+};
+
+const closePreviewModal = () => {
+    showPreviewModal.value = false;
+    previewingFile.value = null;
+};
+
 // ── Download ──────────────────────────────────────────────────────────────────
 const download = (file) => {
     window.open(route('tenant.files.download', {
@@ -114,7 +182,15 @@ const formatBytes = (bytes) => {
 const fileIcon = (mimeType) => {
     if (!mimeType) { return DocumentIcon; }
     if (mimeType.startsWith('image/')) { return PhotoIcon; }
-    if (mimeType.includes('pdf') || mimeType.includes('text')) { return DocumentTextIcon; }
+    if (mimeType.startsWith('audio/')) { return MusicalNoteIcon; }
+    if (mimeType.startsWith('video/')) { return FilmIcon; }
+    if (mimeType.includes('pdf') || mimeType.includes('text') || mimeType === 'application/json' || mimeType === 'application/xml') {
+        return DocumentTextIcon;
+    }
+    if (mimeType.includes('zip') || mimeType.includes('tar') || mimeType.includes('rar') || mimeType.includes('7z')) {
+        return ArchiveBoxIcon;
+    }
+
     return DocumentIcon;
 };
 
@@ -207,10 +283,11 @@ const showTenantSelector = computed(() => props.tenantOptions.length > 0);
                         <div class="flex items-center justify-end gap-1">
                             <button
                                 class="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-indigo-600 dark:hover:bg-gray-700"
-                                title="Download"
-                                @click="download(row)"
+                                :title="canPreview(row.mime_type) ? 'Preview' : 'Download'"
+                                @click="openFile(row)"
                             >
-                                <ArrowDownTrayIcon class="size-4" />
+                                <EyeIcon v-if="canPreview(row.mime_type)" class="size-4" />
+                                <ArrowDownTrayIcon v-else class="size-4" />
                             </button>
                             <button
                                 class="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-red-600 dark:hover:bg-gray-700"
@@ -267,6 +344,49 @@ const showTenantSelector = computed(() => props.tenantOptions.length > 0);
             <div class="mt-5 flex justify-end gap-3">
                 <Button variant="secondary" @click="showDeleteModal = false">Cancel</Button>
                 <Button variant="danger" :loading="deleteForm.processing" @click="confirmDelete">Delete</Button>
+            </div>
+        </Modal>
+
+        <!-- Preview modal -->
+        <Modal :show="showPreviewModal" :title="previewingFile?.original_name" max-width="2xl" @close="closePreviewModal">
+            <div class="space-y-3">
+                <img
+                    v-if="previewType === 'image' && previewUrl"
+                    :src="previewUrl"
+                    :alt="previewingFile?.original_name"
+                    class="mx-auto max-h-[70vh] w-auto rounded-md"
+                />
+
+                <audio
+                    v-else-if="previewType === 'audio' && previewUrl"
+                    controls
+                    class="w-full"
+                >
+                    <source :src="previewUrl" :type="previewingFile?.mime_type || undefined">
+                </audio>
+
+                <video
+                    v-else-if="previewType === 'video' && previewUrl"
+                    controls
+                    class="max-h-[70vh] w-full rounded-md bg-black"
+                >
+                    <source :src="previewUrl" :type="previewingFile?.mime_type || undefined">
+                </video>
+
+                <iframe
+                    v-else-if="previewUrl"
+                    :key="previewingFile?.id"
+                    :src="previewUrl"
+                    sandbox=""
+                    class="h-[70vh] w-full rounded-md border border-gray-200 dark:border-gray-700"
+                    title="File preview"
+                />
+
+                <p v-else class="text-sm text-gray-500">Preview is not available for this file.</p>
+
+                <div class="flex justify-end">
+                    <Button variant="secondary" @click="download(previewingFile)">Download</Button>
+                </div>
             </div>
         </Modal>
 

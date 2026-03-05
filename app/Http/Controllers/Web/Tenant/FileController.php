@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileController extends Controller
@@ -161,5 +162,25 @@ class FileController extends Controller
         $disk = Storage::disk($tenantFile->disk);
 
         return $disk->download($tenantFile->path, $tenantFile->original_name);
+    }
+
+    public function preview(string $file): BinaryFileResponse
+    {
+        $tenantId = $this->requireTenantId();
+
+        $tenantFile = TenantFile::on('central')
+            ->where('tenant_id', $tenantId)
+            ->where('id', $file)
+            ->firstOrFail();
+
+        /** @var FilesystemAdapter $disk */
+        $disk = Storage::disk($tenantFile->disk);
+
+        abort_unless($disk->exists($tenantFile->path), 404);
+
+        return response()->file($disk->path($tenantFile->path), [
+            'Content-Type' => $tenantFile->mime_type ?: 'application/octet-stream',
+            'Content-Disposition' => 'inline; filename="'.addcslashes($tenantFile->original_name, '"\\').'"',
+        ]);
     }
 }

@@ -85,6 +85,7 @@ Route::middleware(['auth', 'tenant.optional', 'tenant_or_super_admin'])->prefix(
     Route::post('files', [FileController::class, 'store'])->name('files.store');
     Route::delete('files/{file}', [FileController::class, 'destroy'])->name('files.destroy');
     Route::get('files/{file}/download', [FileController::class, 'download'])->name('files.download');
+    Route::get('files/{file}/preview', [FileController::class, 'preview'])->name('files.preview');
 
     // Audit logs
     Route::get('audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
