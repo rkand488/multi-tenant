@@ -8,13 +8,20 @@ use App\Http\Requests\Settings\UpdatePasswordRequest;
 use App\Http\Requests\Settings\UpdateProfileRequest;
 use App\Http\Requests\Settings\UpdateTeamRequest;
 use App\Models\User;
+use App\Tenancy\TenantQueryExecutor;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class SettingsController extends Controller
 {
+    public function __construct(
+        private readonly TenantQueryExecutor $tenantQueryExecutor,
+    ) {}
+
     public function apiTokens(): Response
     {
         /** @var User $user */
@@ -64,10 +71,7 @@ class SettingsController extends Controller
         $tenant = Tenant::on('central')->find($user->tenant_id);
 
         $transferableMembers = $user->isTenantOwner()
-            ? User::where('id', '!=', $user->id)
-                ->orderBy('name')
-                ->get(['id', 'name', 'email'])
-                ->map(fn ($u) => ['id' => $u->id, 'name' => $u->name, 'email' => $u->email])
+            ? $this->resolveTransferableMembers($user)
             : collect();
 
         return Inertia::render('Tenant/Settings/Team', [
@@ -163,5 +167,34 @@ class SettingsController extends Controller
         $newOwner->update(['role' => \App\Central\Enums\UserRole::TenantOwner]);
 
         return back()->with('success', "Workspace ownership transferred to {$newOwner->name}.");
+    }
+
+    private function resolveTransferableMembers(User $user): Collection
+    {
+        $tenantResult = $this->tenantQueryExecutor->runTenant(
+            fn ($tenantConnection) => $tenantConnection
+                ->table('users')
+                ->where('id', '!=', $user->id)
+                ->orderBy('name')
+                ->get(['id', 'name', 'email'])
+                ->map(fn ($member) => [
+                    'id' => $member->id,
+                    'name' => $member->name,
+                    'email' => $member->email,
+                ])
+        );
+
+        if ($tenantResult instanceof Collection) {
+            return $tenantResult;
+        }
+
+        return User::where('id', '!=', $user->id)
+            ->orderBy('name')
+            ->get(['id', 'name', 'email'])
+            ->map(fn ($member) => [
+                'id' => $member->id,
+                'name' => $member->name,
+                'email' => $member->email,
+            ]);
     }
 }

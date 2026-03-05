@@ -67,7 +67,7 @@ class TenantRegistrationService
             // Dispatch the provisioning job which will set the tenant Active
             // and send the owner a welcome email once setup is complete.
             // With a sync queue driver (local/testing) this runs inline.
-            ProvisionTenantDatabase::dispatch($tenant, $owner->email);
+            ProvisionTenantDatabase::dispatch($tenant, $owner->email)->afterCommit();
 
             return ['tenant' => $tenant, 'user' => $owner];
         });

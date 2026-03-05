@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Web\Tenant;
 use App\Central\Models\Tenant;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
+use Throwable;
 
 class DashboardController extends Controller
 {
@@ -23,7 +25,7 @@ class DashboardController extends Controller
         $maxUsers = $planFeatures['max_users'] ?? 5;
         $storageLimit = ($planFeatures['storage_gb'] ?? 5) * 1024;
 
-        $userCount = User::count();
+        $userCount = $this->resolveUserCount();
 
         return Inertia::render('Tenant/Dashboard', [
             'stats' => [
@@ -38,5 +40,21 @@ class DashboardController extends Controller
             'recentActivity' => [],
             'invitationsPending' => 0,
         ]);
+    }
+
+    private function resolveUserCount(): int
+    {
+        $tenant = tenantOrNull();
+
+        if ($tenant !== null) {
+            try {
+                return (int) DB::connection(config('tenancy.tenant_connection', 'tenant'))
+                    ->table('users')
+                    ->count();
+            } catch (Throwable) {
+            }
+        }
+
+        return User::count();
     }
 }

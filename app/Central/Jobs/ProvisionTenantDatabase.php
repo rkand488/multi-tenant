@@ -3,6 +3,7 @@
 namespace App\Central\Jobs;
 
 use App\Central\Enums\TenantStatus;
+use App\Central\Enums\UserRole;
 use App\Central\Models\Tenant;
 use App\Models\User;
 use App\Notifications\TenantWelcomeNotification;
@@ -21,10 +22,6 @@ use Illuminate\Support\Facades\DB;
  *
  * Queue:  central (runs on the default worker pool)
  * Retry:  3 attempts with 60-second backoff
- *
- * @note DB creation is ready to activate: uncomment the createDatabase()
- *       call and add files under database/migrations/tenant/ when moving
- *       to the full database-per-tenant architecture.
  */
 class ProvisionTenantDatabase implements ShouldQueue
 {
@@ -41,14 +38,9 @@ class ProvisionTenantDatabase implements ShouldQueue
 
     public function handle(DatabaseManager $databaseManager): void
     {
-        // ----------------------------------------------------------------
-        // [Option B – DB-per-tenant] Uncomment this line and add tenant-
-        // specific migrations under database/migrations/tenant/ to enable
-        // full database isolation. Keep commented while the single-DB
-        // architecture (tenant_id column scoping) is in use.
-        //
-        // $this->createDatabase($databaseManager);
-        // ----------------------------------------------------------------
+        if ($this->shouldProvisionDatabase()) {
+            $this->createDatabase($databaseManager);
+        }
 
         // Mark the tenant as Active now that setup is complete.
         $this->tenant->update(['status' => TenantStatus::Active]);
@@ -90,7 +82,50 @@ class ProvisionTenantDatabase implements ShouldQueue
             '--no-interaction' => true,
         ]);
 
+        $this->seedOwnerUserInTenantDatabase();
+
         // Restore the central connection.
         $databaseManager->connectCentral();
+    }
+
+    private function seedOwnerUserInTenantDatabase(): void
+    {
+        $owner = User::on('central')
+            ->where('email', $this->ownerEmail)
+            ->where('tenant_id', $this->tenant->id)
+            ->first();
+
+        if ($owner === null) {
+            return;
+        }
+
+        DB::connection(config('tenancy.tenant_connection', 'tenant'))
+            ->table('users')
+            ->updateOrInsert(
+                ['email' => $owner->email],
+                [
+                    'name' => $owner->name,
+                    'email' => $owner->email,
+                    'role' => UserRole::TenantOwner->value,
+                    'tenant_id' => $this->tenant->id,
+                    'role_id' => $owner->role_id,
+                    'email_verified_at' => $owner->email_verified_at,
+                    'password' => $owner->password,
+                    'remember_token' => $owner->remember_token,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+            );
+    }
+
+    private function shouldProvisionDatabase(): bool
+    {
+        if (config('database.connections.central.driver') !== 'mysql') {
+            return false;
+        }
+
+        $migrationFiles = glob(database_path('migrations/tenant/*.php'));
+
+        return is_array($migrationFiles) && count($migrationFiles) > 0;
     }
 }

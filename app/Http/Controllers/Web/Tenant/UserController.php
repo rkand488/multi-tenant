@@ -9,8 +9,11 @@ use App\Http\Requests\Tenant\StoreUserInviteRequest;
 use App\Models\Invitation;
 use App\Models\Role;
 use App\Models\User;
+use App\Tenancy\TenantQueryExecutor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,13 +21,15 @@ class UserController extends Controller
 {
     public function __construct(
         private readonly InvitationService $invitationService,
+        private readonly TenantQueryExecutor $tenantQueryExecutor,
     ) {}
 
     public function index(): Response
     {
-        $roles = Role::orderBy('name')->get(['id', 'name', 'description']);
+        $roles = $this->resolveRolesCollection(['id', 'name', 'description']);
+        $roleNames = $roles->pluck('name', 'id');
 
-        $users = User::with('customRole')->orderBy('name')->paginate(20);
+        $users = $this->resolveUsersPaginator();
 
         return Inertia::render('Tenant/Users/Index', [
             'users' => $users->through(fn ($u) => [
@@ -32,7 +37,9 @@ class UserController extends Controller
                 'name' => $u->name,
                 'email' => $u->email,
                 'role_id' => $u->role_id,
-                'role_name' => $u->customRole?->name ?? '—',
+                'role_name' => $u instanceof User
+                    ? ($u->customRole?->name ?? ($u->role_id ? ($roleNames[$u->role_id] ?? '—') : '—'))
+                    : ($u->role_id ? ($roleNames[$u->role_id] ?? '—') : '—'),
                 'status' => $u->email_verified_at ? 'active' : 'invited',
                 'joined_at' => $u->created_at?->toFormattedDateString(),
                 'last_seen_at' => null,
@@ -50,7 +57,7 @@ class UserController extends Controller
 
         $target = User::findOrFail($userId);
 
-        $roles = Role::orderBy('name')->get(['id', 'name']);
+        $roles = $this->resolveRolesCollection(['id', 'name']);
 
         return Inertia::render('Tenant/Users/Show', [
             'user' => [
@@ -77,9 +84,9 @@ class UserController extends Controller
 
         $planFeatures = $tenant?->currentSubscription?->plan?->features ?? [];
         $maxUsers = $planFeatures['max_users'] ?? 5;
-        $current = User::count();
+        $current = $this->resolveUsersCount();
 
-        $roles = Role::orderBy('name')->get(['id', 'name', 'description']);
+        $roles = $this->resolveRolesCollection(['id', 'name', 'description']);
 
         return Inertia::render('Tenant/Users/Create', [
             'roles' => $roles,
@@ -112,12 +119,11 @@ class UserController extends Controller
         $tenantUser = User::findOrFail($user);
 
         $validated = $request->validate([
-            'role_id' => ['nullable', 'integer', 'exists:central.roles,id'],
+            'role_id' => ['nullable', 'integer'],
         ]);
 
-        // Ensure the role belongs to this tenant (ScopedByTenant filters by current tenant)
-        if ($validated['role_id']) {
-            $roleExists = Role::where('id', $validated['role_id'])->exists();
+        if (($validated['role_id'] ?? null) !== null) {
+            $roleExists = $this->roleExistsInCurrentTenant((int) $validated['role_id']);
 
             if (! $roleExists) {
                 abort(403, 'Role does not belong to this tenant.');
@@ -181,5 +187,76 @@ class UserController extends Controller
             ->notify(new \App\Notifications\TenantInvitationNotification($invitation, $workspaceName));
 
         return back()->with('success', 'Invitation resent successfully.');
+    }
+
+    private function resolveUsersPaginator(): LengthAwarePaginator
+    {
+        $tenantResult = $this->tenantQueryExecutor->runTenant(
+            fn ($tenantConnection) => $tenantConnection
+                ->table('users')
+                ->select([
+                    'id',
+                    'name',
+                    'email',
+                    'role_id',
+                    'email_verified_at',
+                    'created_at',
+                ])
+                ->orderBy('name')
+                ->paginate(20)
+        );
+
+        if ($tenantResult instanceof LengthAwarePaginator) {
+            return $tenantResult;
+        }
+
+        return User::with('customRole')->orderBy('name')->paginate(20);
+    }
+
+    private function resolveUsersCount(): int
+    {
+        $tenantResult = $this->tenantQueryExecutor->runTenant(
+            fn ($tenantConnection) => (int) $tenantConnection
+                ->table('users')
+                ->count()
+        );
+
+        if (is_int($tenantResult)) {
+            return $tenantResult;
+        }
+
+        return User::count();
+    }
+
+    private function resolveRolesCollection(array $columns): Collection
+    {
+        $tenantResult = $this->tenantQueryExecutor->runTenant(
+            fn ($tenantConnection) => $tenantConnection
+                ->table('roles')
+                ->orderBy('name')
+                ->get($columns)
+        );
+
+        if ($tenantResult instanceof Collection) {
+            return $tenantResult;
+        }
+
+        return Role::orderBy('name')->get($columns);
+    }
+
+    private function roleExistsInCurrentTenant(int $roleId): bool
+    {
+        $tenantResult = $this->tenantQueryExecutor->runTenant(
+            fn ($tenantConnection) => $tenantConnection
+                ->table('roles')
+                ->where('id', $roleId)
+                ->exists()
+        );
+
+        if (is_bool($tenantResult)) {
+            return $tenantResult;
+        }
+
+        return Role::where('id', $roleId)->exists();
     }
 }

@@ -22,6 +22,16 @@ class EnsureTenantOrSuperAdmin
             abort(Response::HTTP_FORBIDDEN, 'Forbidden. Tenant or super admin access required.');
         }
 
+        if (! $user->isSuperAdmin() && tenantOrNull() === null) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Tenant context could not be resolved for this request.',
+                ], Response::HTTP_FORBIDDEN);
+            }
+
+            abort(Response::HTTP_FORBIDDEN, 'Tenant context could not be resolved for this request.');
+        }
+
         return $next($request);
     }
 }
