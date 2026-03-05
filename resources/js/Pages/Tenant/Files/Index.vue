@@ -13,9 +13,13 @@ import {
     ArrowUpTrayIcon,
     TrashIcon,
     ArrowDownTrayIcon,
+    EyeIcon,
     DocumentIcon,
     PhotoIcon,
     DocumentTextIcon,
+    MusicalNoteIcon,
+    FilmIcon,
+    ArchiveBoxIcon,
 } from '@heroicons/vue/24/outline';
 
 defineOptions({ layout: TenantLayout });
@@ -25,10 +29,13 @@ const props = defineProps({
     usageBytes:  { type: Number, default: 0 },
     limitBytes:  { type: Number, default: 0 },
     canUpload:   { type: Boolean, default: true },
+    selectedTenantId: { type: String, default: null },
+    tenantOptions: { type: Array, default: () => [] },
 });
 
 // ── Upload ────────────────────────────────────────────────────────────────────
 const showUploadModal = ref(false);
+const selectedTenantId = ref(props.selectedTenantId);
 const uploadForm = useForm({ file: null });
 
 const onFileSelected = (e) => {
@@ -36,12 +43,29 @@ const onFileSelected = (e) => {
 };
 
 const submitUpload = () => {
+    if (showTenantSelector.value && !selectedTenantId.value) {
+        uploadForm.setError('tenant_id', 'Please select a tenant first.');
+        return;
+    }
+
     uploadForm.post(route('tenant.files.store'), {
         forceFormData: true,
         onSuccess: () => {
             showUploadModal.value = false;
-            uploadForm.reset();
+            uploadForm.reset('file');
         },
+    });
+};
+
+const onTenantChanged = () => {
+    uploadForm.clearErrors('tenant_id');
+
+    router.get(route('tenant.files.index'), {
+        tenant_id: selectedTenantId.value || undefined,
+    }, {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true,
     });
 };
 
@@ -56,14 +80,84 @@ const openDeleteModal = (file) => {
 };
 
 const confirmDelete = () => {
-    deleteForm.delete(route('tenant.files.destroy', deletingFile.value.id), {
+    deleteForm.delete(route('tenant.files.destroy', {
+        file: deletingFile.value.id,
+        tenant_id: selectedTenantId.value || undefined,
+    }), {
         onSuccess: () => (showDeleteModal.value = false),
     });
 };
 
+// ── Preview ───────────────────────────────────────────────────────────────────
+const showPreviewModal = ref(false);
+const previewingFile = ref(null);
+
+const canPreview = (mimeType) => {
+    if (!mimeType) {
+        return false;
+    }
+
+    return mimeType.startsWith('image/')
+        || mimeType.startsWith('audio/')
+        || mimeType.startsWith('video/')
+        || mimeType === 'application/pdf'
+        || mimeType.startsWith('text/')
+        || mimeType === 'application/json'
+        || mimeType === 'application/xml'
+        || mimeType === 'application/xhtml+xml';
+};
+
+const previewType = computed(() => {
+    const mimeType = previewingFile.value?.mime_type ?? '';
+
+    if (mimeType.startsWith('image/')) {
+        return 'image';
+    }
+
+    if (mimeType.startsWith('audio/')) {
+        return 'audio';
+    }
+
+    if (mimeType.startsWith('video/')) {
+        return 'video';
+    }
+
+    return 'iframe';
+});
+
+const previewUrl = computed(() => {
+    if (!previewingFile.value) {
+        return null;
+    }
+
+    return route('tenant.files.preview', {
+        file: previewingFile.value.id,
+        tenant_id: selectedTenantId.value || undefined,
+    });
+});
+
+const openFile = (file) => {
+    if (!canPreview(file.mime_type)) {
+        download(file);
+
+        return;
+    }
+
+    previewingFile.value = file;
+    showPreviewModal.value = true;
+};
+
+const closePreviewModal = () => {
+    showPreviewModal.value = false;
+    previewingFile.value = null;
+};
+
 // ── Download ──────────────────────────────────────────────────────────────────
 const download = (file) => {
-    window.open(route('tenant.files.download', file.id), '_blank');
+    window.open(route('tenant.files.download', {
+        file: file.id,
+        tenant_id: selectedTenantId.value || undefined,
+    }), '_blank');
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -88,7 +182,15 @@ const formatBytes = (bytes) => {
 const fileIcon = (mimeType) => {
     if (!mimeType) { return DocumentIcon; }
     if (mimeType.startsWith('image/')) { return PhotoIcon; }
-    if (mimeType.includes('pdf') || mimeType.includes('text')) { return DocumentTextIcon; }
+    if (mimeType.startsWith('audio/')) { return MusicalNoteIcon; }
+    if (mimeType.startsWith('video/')) { return FilmIcon; }
+    if (mimeType.includes('pdf') || mimeType.includes('text') || mimeType === 'application/json' || mimeType === 'application/xml') {
+        return DocumentTextIcon;
+    }
+    if (mimeType.includes('zip') || mimeType.includes('tar') || mimeType.includes('rar') || mimeType.includes('7z')) {
+        return ArchiveBoxIcon;
+    }
+
     return DocumentIcon;
 };
 
@@ -99,6 +201,8 @@ const columns = [
     { key: 'date',    label: 'Uploaded', class: 'w-36' },
     { key: 'actions', label: '',        class: 'w-20 text-right' },
 ];
+
+const showTenantSelector = computed(() => props.tenantOptions.length > 0);
 </script>
 
 <template>
@@ -110,11 +214,30 @@ const columns = [
                 <h1 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Files</h1>
                 <p class="mt-1 text-sm text-gray-500">Manage your workspace file storage.</p>
             </div>
-            <Button v-if="canUpload" @click="showUploadModal = true" class="flex items-center gap-2">
-                <ArrowUpTrayIcon class="size-4" />
-                Upload file
-            </Button>
+            <div class="flex items-center gap-2">
+                <select
+                    v-if="showTenantSelector"
+                    v-model="selectedTenantId"
+                    class="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+                    @change="onTenantChanged"
+                >
+                    <option :value="null">Select tenant</option>
+                    <option v-for="tenant in tenantOptions" :key="tenant.id" :value="tenant.id">
+                        {{ tenant.name }}
+                    </option>
+                </select>
+                <Button v-if="canUpload" @click="showUploadModal = true" class="flex items-center gap-2">
+                    <ArrowUpTrayIcon class="size-4" />
+                    Upload file
+                </Button>
+            </div>
         </div>
+
+        <Alert
+            v-if="showTenantSelector && !selectedTenantId"
+            type="warning"
+            message="Select a tenant to upload, download, or delete files."
+        />
 
         <!-- Storage usage bar -->
         <Card v-if="limitBytes > 0">
@@ -138,40 +261,43 @@ const columns = [
         <!-- File list -->
         <Card>
             <Table :columns="columns" :rows="files.data">
-                <template #cell-name="{ row }">
-                    <div class="flex items-center gap-3">
-                        <component :is="fileIcon(row.mime_type)" class="size-5 shrink-0 text-gray-400" />
-                        <span class="truncate font-medium text-gray-900 dark:text-gray-100">
-                            {{ row.original_name }}
-                        </span>
-                    </div>
-                </template>
-                <template #cell-mime="{ row }">
-                    <span class="text-xs text-gray-500">{{ row.mime_type }}</span>
-                </template>
-                <template #cell-size="{ row }">
-                    <span class="text-sm text-gray-600 dark:text-gray-400">{{ formatBytes(row.size) }}</span>
-                </template>
-                <template #cell-date="{ row }">
-                    <span class="text-sm text-gray-500">{{ new Date(row.created_at).toLocaleDateString() }}</span>
-                </template>
-                <template #cell-actions="{ row }">
-                    <div class="flex items-center justify-end gap-1">
-                        <button
-                            class="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-indigo-600 dark:hover:bg-gray-700"
-                            title="Download"
-                            @click="download(row)"
-                        >
-                            <ArrowDownTrayIcon class="size-4" />
-                        </button>
-                        <button
-                            class="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-red-600 dark:hover:bg-gray-700"
-                            title="Delete"
-                            @click="openDeleteModal(row)"
-                        >
-                            <TrashIcon class="size-4" />
-                        </button>
-                    </div>
+                <template #row="{ row }">
+                    <td class="px-4 py-3">
+                        <div class="flex items-center gap-3">
+                            <component :is="fileIcon(row.mime_type)" class="size-5 shrink-0 text-gray-400" />
+                            <span class="truncate font-medium text-gray-900 dark:text-gray-100">
+                                {{ row.original_name }}
+                            </span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3 w-36">
+                        <span class="text-xs text-gray-500">{{ row.mime_type }}</span>
+                    </td>
+                    <td class="px-4 py-3 w-28">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{{ formatBytes(row.size) }}</span>
+                    </td>
+                    <td class="px-4 py-3 w-36">
+                        <span class="text-sm text-gray-500">{{ new Date(row.created_at).toLocaleDateString() }}</span>
+                    </td>
+                    <td class="px-4 py-3 w-20 text-right">
+                        <div class="flex items-center justify-end gap-1">
+                            <button
+                                class="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-indigo-600 dark:hover:bg-gray-700"
+                                :title="canPreview(row.mime_type) ? 'Preview' : 'Download'"
+                                @click="openFile(row)"
+                            >
+                                <EyeIcon v-if="canPreview(row.mime_type)" class="size-4" />
+                                <ArrowDownTrayIcon v-else class="size-4" />
+                            </button>
+                            <button
+                                class="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-red-600 dark:hover:bg-gray-700"
+                                title="Delete"
+                                @click="openDeleteModal(row)"
+                            >
+                                <TrashIcon class="size-4" />
+                            </button>
+                        </div>
+                    </td>
                 </template>
                 <template #empty>
                     <div class="py-12 text-center">
@@ -190,6 +316,7 @@ const columns = [
         <Modal :show="showUploadModal" title="Upload File" @close="showUploadModal = false">
             <form @submit.prevent="submitUpload" class="space-y-4">
                 <div>
+                    <Alert v-if="uploadForm.errors.tenant_id" type="error" :message="uploadForm.errors.tenant_id" class="mb-2" />
                     <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Select file
                     </label>
@@ -217,6 +344,49 @@ const columns = [
             <div class="mt-5 flex justify-end gap-3">
                 <Button variant="secondary" @click="showDeleteModal = false">Cancel</Button>
                 <Button variant="danger" :loading="deleteForm.processing" @click="confirmDelete">Delete</Button>
+            </div>
+        </Modal>
+
+        <!-- Preview modal -->
+        <Modal :show="showPreviewModal" :title="previewingFile?.original_name" max-width="2xl" @close="closePreviewModal">
+            <div class="space-y-3">
+                <img
+                    v-if="previewType === 'image' && previewUrl"
+                    :src="previewUrl"
+                    :alt="previewingFile?.original_name"
+                    class="mx-auto max-h-[70vh] w-auto rounded-md"
+                />
+
+                <audio
+                    v-else-if="previewType === 'audio' && previewUrl"
+                    controls
+                    class="w-full"
+                >
+                    <source :src="previewUrl" :type="previewingFile?.mime_type || undefined">
+                </audio>
+
+                <video
+                    v-else-if="previewType === 'video' && previewUrl"
+                    controls
+                    class="max-h-[70vh] w-full rounded-md bg-black"
+                >
+                    <source :src="previewUrl" :type="previewingFile?.mime_type || undefined">
+                </video>
+
+                <iframe
+                    v-else-if="previewUrl"
+                    :key="previewingFile?.id"
+                    :src="previewUrl"
+                    sandbox=""
+                    class="h-[70vh] w-full rounded-md border border-gray-200 dark:border-gray-700"
+                    title="File preview"
+                />
+
+                <p v-else class="text-sm text-gray-500">Preview is not available for this file.</p>
+
+                <div class="flex justify-end">
+                    <Button variant="secondary" @click="download(previewingFile)">Download</Button>
+                </div>
             </div>
         </Modal>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Central\Models\Tenant;
 use App\Tenancy\DatabaseManager;
 use App\Tenancy\TenantContext;
 use App\Tenancy\TenantResolver;
@@ -29,6 +30,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class IdentifyTenantIfPresent
 {
+    private const SUPER_ADMIN_TENANT_SESSION_KEY = 'selected_tenant_id';
+
     public function __construct(
         private readonly TenantResolver $resolver,
         private readonly TenantContext $context,
@@ -42,10 +45,76 @@ class IdentifyTenantIfPresent
             $this->context->set($tenant);
             $this->databaseManager->connectTenant($tenant);
         } catch (NotFoundHttpException) {
-            // No tenant for this host (e.g. central domain) – continue without tenant context.
+            $fallbackTenant = $this->resolveFallbackTenant($request);
+
+            if ($fallbackTenant !== null) {
+                $this->context->set($fallbackTenant);
+                $this->databaseManager->connectTenant($fallbackTenant);
+            }
         }
 
         return $next($request);
+    }
+
+    private function resolveFallbackTenant(Request $request): ?Tenant
+    {
+        $user = $request->user();
+
+        if ($user === null) {
+            return null;
+        }
+
+        if ($user->isSuperAdmin()) {
+            $requestedTenantId = trim((string) ($request->input('tenant_id') ?? $request->query('tenant_id') ?? ''));
+            $refererTenantId = $this->extractTenantIdFromReferer($request);
+            $sessionTenantId = (string) $request->session()->get(self::SUPER_ADMIN_TENANT_SESSION_KEY, '');
+            $selectedTenantId = $requestedTenantId !== ''
+                ? $requestedTenantId
+                : ($refererTenantId !== '' ? $refererTenantId : $sessionTenantId);
+
+            if ($selectedTenantId === '') {
+                $request->session()->forget(self::SUPER_ADMIN_TENANT_SESSION_KEY);
+
+                return null;
+            }
+
+            $tenant = Tenant::on('central')->find($selectedTenantId);
+
+            if ($tenant === null) {
+                $request->session()->forget(self::SUPER_ADMIN_TENANT_SESSION_KEY);
+
+                return null;
+            }
+
+            $request->session()->put(self::SUPER_ADMIN_TENANT_SESSION_KEY, $tenant->id);
+
+            return $tenant;
+        }
+
+        if ($user->tenant_id === null) {
+            return null;
+        }
+
+        return Tenant::on('central')->find($user->tenant_id);
+    }
+
+    private function extractTenantIdFromReferer(Request $request): string
+    {
+        $referer = (string) $request->headers->get('referer', '');
+
+        if ($referer === '') {
+            return '';
+        }
+
+        $query = parse_url($referer, PHP_URL_QUERY);
+
+        if (! is_string($query) || $query === '') {
+            return '';
+        }
+
+        parse_str($query, $params);
+
+        return trim((string) ($params['tenant_id'] ?? ''));
     }
 
     /**
