@@ -25,10 +25,13 @@ const props = defineProps({
     usageBytes:  { type: Number, default: 0 },
     limitBytes:  { type: Number, default: 0 },
     canUpload:   { type: Boolean, default: true },
+    selectedTenantId: { type: String, default: null },
+    tenantOptions: { type: Array, default: () => [] },
 });
 
 // ── Upload ────────────────────────────────────────────────────────────────────
 const showUploadModal = ref(false);
+const selectedTenantId = ref(props.selectedTenantId);
 const uploadForm = useForm({ file: null });
 
 const onFileSelected = (e) => {
@@ -36,12 +39,29 @@ const onFileSelected = (e) => {
 };
 
 const submitUpload = () => {
+    if (showTenantSelector.value && !selectedTenantId.value) {
+        uploadForm.setError('tenant_id', 'Please select a tenant first.');
+        return;
+    }
+
     uploadForm.post(route('tenant.files.store'), {
         forceFormData: true,
         onSuccess: () => {
             showUploadModal.value = false;
-            uploadForm.reset();
+            uploadForm.reset('file');
         },
+    });
+};
+
+const onTenantChanged = () => {
+    uploadForm.clearErrors('tenant_id');
+
+    router.get(route('tenant.files.index'), {
+        tenant_id: selectedTenantId.value || undefined,
+    }, {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true,
     });
 };
 
@@ -56,14 +76,20 @@ const openDeleteModal = (file) => {
 };
 
 const confirmDelete = () => {
-    deleteForm.delete(route('tenant.files.destroy', deletingFile.value.id), {
+    deleteForm.delete(route('tenant.files.destroy', {
+        file: deletingFile.value.id,
+        tenant_id: selectedTenantId.value || undefined,
+    }), {
         onSuccess: () => (showDeleteModal.value = false),
     });
 };
 
 // ── Download ──────────────────────────────────────────────────────────────────
 const download = (file) => {
-    window.open(route('tenant.files.download', file.id), '_blank');
+    window.open(route('tenant.files.download', {
+        file: file.id,
+        tenant_id: selectedTenantId.value || undefined,
+    }), '_blank');
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -99,6 +125,8 @@ const columns = [
     { key: 'date',    label: 'Uploaded', class: 'w-36' },
     { key: 'actions', label: '',        class: 'w-20 text-right' },
 ];
+
+const showTenantSelector = computed(() => props.tenantOptions.length > 0);
 </script>
 
 <template>
@@ -110,11 +138,30 @@ const columns = [
                 <h1 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Files</h1>
                 <p class="mt-1 text-sm text-gray-500">Manage your workspace file storage.</p>
             </div>
-            <Button v-if="canUpload" @click="showUploadModal = true" class="flex items-center gap-2">
-                <ArrowUpTrayIcon class="size-4" />
-                Upload file
-            </Button>
+            <div class="flex items-center gap-2">
+                <select
+                    v-if="showTenantSelector"
+                    v-model="selectedTenantId"
+                    class="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+                    @change="onTenantChanged"
+                >
+                    <option :value="null">Select tenant</option>
+                    <option v-for="tenant in tenantOptions" :key="tenant.id" :value="tenant.id">
+                        {{ tenant.name }}
+                    </option>
+                </select>
+                <Button v-if="canUpload" @click="showUploadModal = true" class="flex items-center gap-2">
+                    <ArrowUpTrayIcon class="size-4" />
+                    Upload file
+                </Button>
+            </div>
         </div>
+
+        <Alert
+            v-if="showTenantSelector && !selectedTenantId"
+            type="warning"
+            message="Select a tenant to upload, download, or delete files."
+        />
 
         <!-- Storage usage bar -->
         <Card v-if="limitBytes > 0">
@@ -190,6 +237,7 @@ const columns = [
         <Modal :show="showUploadModal" title="Upload File" @close="showUploadModal = false">
             <form @submit.prevent="submitUpload" class="space-y-4">
                 <div>
+                    <Alert v-if="uploadForm.errors.tenant_id" type="error" :message="uploadForm.errors.tenant_id" class="mb-2" />
                     <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Select file
                     </label>
