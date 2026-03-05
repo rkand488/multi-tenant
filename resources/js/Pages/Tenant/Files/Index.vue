@@ -185,40 +185,42 @@ const showTenantSelector = computed(() => props.tenantOptions.length > 0);
         <!-- File list -->
         <Card>
             <Table :columns="columns" :rows="files.data">
-                <template #cell-name="{ row }">
-                    <div class="flex items-center gap-3">
-                        <component :is="fileIcon(row.mime_type)" class="size-5 shrink-0 text-gray-400" />
-                        <span class="truncate font-medium text-gray-900 dark:text-gray-100">
-                            {{ row.original_name }}
-                        </span>
-                    </div>
-                </template>
-                <template #cell-mime="{ row }">
-                    <span class="text-xs text-gray-500">{{ row.mime_type }}</span>
-                </template>
-                <template #cell-size="{ row }">
-                    <span class="text-sm text-gray-600 dark:text-gray-400">{{ formatBytes(row.size) }}</span>
-                </template>
-                <template #cell-date="{ row }">
-                    <span class="text-sm text-gray-500">{{ new Date(row.created_at).toLocaleDateString() }}</span>
-                </template>
-                <template #cell-actions="{ row }">
-                    <div class="flex items-center justify-end gap-1">
-                        <button
-                            class="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-indigo-600 dark:hover:bg-gray-700"
-                            title="Download"
-                            @click="download(row)"
-                        >
-                            <ArrowDownTrayIcon class="size-4" />
-                        </button>
-                        <button
-                            class="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-red-600 dark:hover:bg-gray-700"
-                            title="Delete"
-                            @click="openDeleteModal(row)"
-                        >
-                            <TrashIcon class="size-4" />
-                        </button>
-                    </div>
+                <template #row="{ row }">
+                    <td class="px-4 py-3">
+                        <div class="flex items-center gap-3">
+                            <component :is="fileIcon(row.mime_type)" class="size-5 shrink-0 text-gray-400" />
+                            <span class="truncate font-medium text-gray-900 dark:text-gray-100">
+                                {{ row.original_name }}
+                            </span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3 w-36">
+                        <span class="text-xs text-gray-500">{{ row.mime_type }}</span>
+                    </td>
+                    <td class="px-4 py-3 w-28">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">{{ formatBytes(row.size) }}</span>
+                    </td>
+                    <td class="px-4 py-3 w-36">
+                        <span class="text-sm text-gray-500">{{ new Date(row.created_at).toLocaleDateString() }}</span>
+                    </td>
+                    <td class="px-4 py-3 w-20 text-right">
+                        <div class="flex items-center justify-end gap-1">
+                            <button
+                                class="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-indigo-600 dark:hover:bg-gray-700"
+                                title="Download"
+                                @click="download(row)"
+                            >
+                                <ArrowDownTrayIcon class="size-4" />
+                            </button>
+                            <button
+                                class="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-red-600 dark:hover:bg-gray-700"
+                                title="Delete"
+                                @click="openDeleteModal(row)"
+                            >
+                                <TrashIcon class="size-4" />
+                            </button>
+                        </div>
+                    </td>
                 </template>
                 <template #empty>
                     <div class="py-12 text-center">

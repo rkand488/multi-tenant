@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Auth\Services\TenantRegistrationService;
+use App\Auth\Services\WebLoginDomainGuard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterTenantRequest;
@@ -19,6 +20,7 @@ class WebAuthController extends Controller
 {
     public function __construct(
         private readonly TenantRegistrationService $registrationService,
+        private readonly WebLoginDomainGuard $loginDomainGuard,
     ) {}
 
     /**
@@ -43,17 +45,11 @@ class WebAuthController extends Controller
             ])->onlyInput('email');
         }
 
-        // When the login form is submitted from a tenant subdomain or custom
-        // domain the IdentifyTenantIfPresent middleware will have resolved a
-        // tenant context.  Enforce that the authenticated user belongs to
-        // that tenant; log them out immediately and return a generic error
-        // if they do not, to prevent cross-tenant session hijacking.
-        $tenant = tenantOrNull();
-
         /** @var \App\Models\User $user */
         $user = Auth::user();
+        $redirectPath = $this->loginDomainGuard->resolveRedirectPath($request, $user);
 
-        if ($tenant !== null && $user->tenant_id !== $tenant->id) {
+        if ($redirectPath === null) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
@@ -65,7 +61,7 @@ class WebAuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('tenant.dashboard'));
+        return redirect()->intended($redirectPath);
     }
 
     /**
