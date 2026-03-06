@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\Auth\InvitationController;
 use App\Http\Controllers\Api\Auth\TokenController;
 use App\Http\Controllers\Api\Billing\InvoiceController;
 use App\Http\Controllers\Api\Billing\PlanController;
+use App\Http\Controllers\Api\Billing\StripeWebhookController;
 use App\Http\Controllers\Api\Billing\SubscriptionController;
 use App\Http\Controllers\Api\Billing\UsageController;
 use App\Http\Controllers\Api\Tenant\ActivityLogController as TenantActivityLogController;
@@ -30,6 +31,9 @@ Route::prefix('v1')->name('api.')->group(function (): void {
 
     Route::get('plans', [PlanController::class, 'index'])->name('plans.index');
     Route::get('plans/{plan}', [PlanController::class, 'show'])->name('plans.show');
+
+    // Stripe webhook — public, no auth (Stripe cannot obtain a bearer token).
+    Route::post('webhooks/stripe', StripeWebhookController::class)->name('webhooks.stripe');
 
     Route::middleware('auth:sanctum')->group(function (): void {
         Route::prefix('auth')->group(function (): void {

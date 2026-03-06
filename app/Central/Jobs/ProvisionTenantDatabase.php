@@ -7,6 +7,8 @@ use App\Central\Models\Tenant;
 use App\Models\User;
 use App\Notifications\TenantWelcomeNotification;
 use App\Tenancy\DatabaseManager;
+use Database\Seeders\Tenant\PermissionSeeder;
+use Database\Seeders\Tenant\RoleSeeder;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Artisan;
@@ -14,17 +16,14 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Provisions a new tenant's isolated database, runs tenant-specific
- * migrations, and sends the owner a welcome notification.
+ * migrations, seeds base roles and permissions, and sends the owner a
+ * welcome notification.
  *
  * Dispatched from TenantRegistrationService after the Tenant record
  * is created in the central database.
  *
  * Queue:  central (runs on the default worker pool)
  * Retry:  3 attempts with 60-second backoff
- *
- * @note DB creation is ready to activate: uncomment the createDatabase()
- *       call and add files under database/migrations/tenant/ when moving
- *       to the full database-per-tenant architecture.
  */
 class ProvisionTenantDatabase implements ShouldQueue
 {
@@ -41,14 +40,7 @@ class ProvisionTenantDatabase implements ShouldQueue
 
     public function handle(DatabaseManager $databaseManager): void
     {
-        // ----------------------------------------------------------------
-        // [Option B – DB-per-tenant] Uncomment this line and add tenant-
-        // specific migrations under database/migrations/tenant/ to enable
-        // full database isolation. Keep commented while the single-DB
-        // architecture (tenant_id column scoping) is in use.
-        //
-        // $this->createDatabase($databaseManager);
-        // ----------------------------------------------------------------
+        $this->createDatabase($databaseManager);
 
         // Mark the tenant as Active now that setup is complete.
         $this->tenant->update(['status' => TenantStatus::Active]);
@@ -65,15 +57,18 @@ class ProvisionTenantDatabase implements ShouldQueue
     }
 
     /**
-     * Create the isolated tenant MySQL database and run tenant-specific
-     * migrations against it.
-     *
-     * Call this instead of (or after) setting status=Active when the
-     * database-per-tenant architecture is fully implemented.
+     * Create the isolated tenant MySQL database, run tenant-specific
+     * migrations, and seed base roles and permissions.
      */
     private function createDatabase(DatabaseManager $databaseManager): void
     {
         $dbName = $this->tenant->databaseName();
+
+        // Tenant database provisioning is MySQL-only. In SQLite (test) environments
+        // the central in-memory database handles all data via tenant_id scoping.
+        if (DB::connection('central')->getDriverName() !== 'mysql') {
+            return;
+        }
 
         // Create the tenant database.
         DB::connection('central')
@@ -89,6 +84,10 @@ class ProvisionTenantDatabase implements ShouldQueue
             '--force' => true,
             '--no-interaction' => true,
         ]);
+
+        // Seed system roles and permissions into the tenant database.
+        app(RoleSeeder::class)->run();
+        app(PermissionSeeder::class)->run();
 
         // Restore the central connection.
         $databaseManager->connectCentral();

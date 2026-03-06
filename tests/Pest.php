@@ -1,14 +1,14 @@
 <?php
 
+use App\Central\Enums\UserRole;
+use App\Central\Models\Tenant;
+use App\Models\User;
+use App\Tenancy\TenantContext;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
 |--------------------------------------------------------------------------
-|
-| The closure you provide to your test functions is always bound to a specific PHPUnit test
-| case class. By default, that class is "PHPUnit\Framework\TestCase". Of course, you may
-| need to change it using the "pest()" function to bind a different classes or traits.
-|
 */
 
 pest()->extend(Tests\TestCase::class)
@@ -25,11 +25,6 @@ pest()->extend(Tests\TestCase::class)
 |--------------------------------------------------------------------------
 | Expectations
 |--------------------------------------------------------------------------
-|
-| When you're writing tests, you often need to check that values meet certain conditions. The
-| "expect()" function gives you access to a set of "expectations" methods that you can use
-| to assert different things. Of course, you may extend the Expectation API at any time.
-|
 */
 
 expect()->extend('toBeOne', function () {
@@ -38,16 +33,54 @@ expect()->extend('toBeOne', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Functions
+| Global Helpers
 |--------------------------------------------------------------------------
-|
-| While Pest is very powerful out-of-the-box, you may have some testing code specific to your
-| project that you don't want to repeat in every file. Here you can also expose helpers as
-| global functions to help you to reduce the number of lines of code in your test files.
-|
 */
 
-function something()
+/**
+ * Create a Tenant record in the central database using its factory.
+ *
+ * @param  array<string, mixed>  $attributes
+ */
+function createTenant(array $attributes = []): Tenant
 {
-    // ..
+    return Tenant::factory()->create($attributes);
+}
+
+/**
+ * Set TenantContext to the given tenant (or create one) and return a
+ * User that belongs to it, already authenticated via actingAs().
+ *
+ * The middleware is intentionally NOT bypassed here — call
+ * `withoutMiddleware([IdentifyTenant::class])` in the test if needed.
+ *
+ * @param  array<string, mixed>  $userAttributes
+ */
+function actingAsTenantUser(
+    ?Tenant $tenant = null,
+    array $userAttributes = [],
+    string $guard = 'sanctum',
+): User {
+    $tenant ??= createTenant();
+
+    initializeTenancy($tenant);
+
+    $user = User::factory()->create(array_merge([
+        'tenant_id' => $tenant->id,
+        'role' => UserRole::TenantUser,
+    ], $userAttributes));
+
+    test()->actingAs($user, $guard);
+
+    return $user;
+}
+
+/**
+ * Bind the given tenant into TenantContext for the current test.
+ * Does NOT switch the database connection (tests run on the central
+ * SQLite in-memory DB and use tenant_id scoping).
+ */
+function initializeTenancy(Tenant $tenant): void
+{
+    app(TenantContext::class)->set($tenant);
 }

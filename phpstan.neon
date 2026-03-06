@@ -1,0 +1,20 @@
+parameters:
+    level: 9
+    paths:
+        - app
+
+    # These errors stem from Laravel's runtime magic (dynamic properties,
+    # Eloquent builder chains) that static analysis cannot resolve without
+    # the larastan extension. Install larastan when adding phpstan to CI:
+    #   composer require --dev nunomaduro/larastan
+    # Then uncomment the includes block below.
+    ignoreErrors:
+        - '#Access to an undefined property#'
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder#'
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Model#'
+
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+
+# includes:
+#     - vendor/nunomaduro/larastan/extension.neon
